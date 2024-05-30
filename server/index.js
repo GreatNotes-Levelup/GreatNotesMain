@@ -1,8 +1,9 @@
 import express from "express";
 import notes from "./routes/notes.js";
 import auth from "./routes/auth.js";
+import { configDotenv } from "dotenv";
 
-
+configDotenv();
 const app = express();
 
 app.use(express.json());
