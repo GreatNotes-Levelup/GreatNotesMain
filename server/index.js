@@ -19,6 +19,5 @@ app.listen(port, () => {
 });
 
 if (process.env.AWS_CLIENT_ID === undefined) {
-  console.log(process.env.AWS_CLIENT_ID)
   console.error("YOU MIGHT NOT HAVE SETUP THE ENV VARIABLES");
 }
