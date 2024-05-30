@@ -1,0 +1,34 @@
+name: Database Migration with Flyway
+
+on:
+  # TODO: uncomment these when we have the secrets in the repo
+  # push:
+  #   branches: 
+  #     - "main"
+  #     - "arinaho/feature/database-migrations"
+  #   paths:
+  #     - 'database/scripts/**'
+  #     - 'database/flyway/**'
+
+  workflow_dispatch:
+
+jobs:
+  migrate-database:
+    name: Run Flyway Migration
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Generate flyway config file
+      run: |
+        echo "flyway.url=${{ secrets.DB_URL }}" >> flyway.generated.conf
+        echo "flyway.user=${{ secrets.DB_USER }}" >> flyway.generated.conf
+        echo "flyway.password=${{ secrets.DB_USER_PASSWORD }}" >> flyway.generated.conf
+        cat database/flyway/flyway.conf >> flyway.generated.conf
+
+    - name: Run Flyway Migration
+      run: |
+        sudo snap install flyway
+        flyway migrate -configFiles=flyway.generated.conf
