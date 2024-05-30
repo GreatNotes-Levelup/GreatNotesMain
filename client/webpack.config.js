@@ -35,7 +35,7 @@ export default (_env, argv) => {
           },
         },
         {
-          test: /\.css$/i,
+          test: /\.(sa|sc|c|post)ss$/,
           use: [
             devMode ? "style-loader" : MiniCssExtractPlugin.loader,
             "css-loader",
