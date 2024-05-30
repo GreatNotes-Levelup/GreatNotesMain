@@ -22,9 +22,14 @@ router.get('/', (req, res) => {
   fetch("https://greatnotes-security-levelup.auth.eu-west-1.amazoncognito.com/oauth2/token?" + new URLSearchParams(params), options).then((oauth_res) => {
     console.log(oauth_res);
     if(oauth_res.ok) {
-      res.json(oauth_res.body);
+      oauth_res.json().then((data) => {
+        res.json(data);
+      })
+      .catch(() => {
+        res.status(500).json("Authentication succeeded but getting the json data failed");
+      });
     } else {
-      res.status(400).json("Seems to have failed the request");
+      res.status(400).json("Seems to have failed the request. Maybe you reused the code :)");
     }
 
   })
