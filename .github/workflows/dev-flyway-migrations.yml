@@ -2,13 +2,13 @@ name: Database Migration with Flyway
 
 on:
   # TODO: uncomment these when we have the secrets in the repo
-  # push:
-  #   branches: 
-  #     - "main"
-  #     - "arinaho/feature/database-migrations"
-  #   paths:
-  #     - 'database/scripts/**'
-  #     - 'database/flyway/**'
+  push:
+    branches: 
+      - "main"
+      - "arinaho/feature/database-migrations"
+    paths:
+      - 'database/scripts/**'
+      - 'database/flyway/**'
 
   workflow_dispatch:
 
