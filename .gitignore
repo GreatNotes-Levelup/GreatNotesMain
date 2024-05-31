@@ -1,3 +1,8 @@
 node_modules
 dist
+role_config
+*.hcl
+*.tfvars
 .env
+.secrets
+.terraform/.terraform
