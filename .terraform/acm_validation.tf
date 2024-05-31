@@ -19,15 +19,14 @@ resource "aws_route53_record" "cert_validation_record" {
     }
   }
 
-  name            = each.value.name
-  records         = [each.value.record]
-  ttl             = 60
-  type            = each.value.type
-  zone_id         = data.aws_route53_zone.external.zone_id
+  name    = each.value.name
+  records = [each.value.record]
+  ttl     = 60
+  type    = each.value.type
+  zone_id = data.aws_route53_zone.external.zone_id
 }
 
 resource "aws_acm_certificate_validation" "default" {
-  certificate_arn = aws_acm_certificate.default.arn
-
+  certificate_arn         = aws_acm_certificate.default.arn
   validation_record_fqdns = [for record in aws_route53_record.cert_validation_record : record.fqdn]
 }
