@@ -53,7 +53,7 @@ resource "aws_db_instance" "great_notes_db" {
   db_subnet_group_name    = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids  = [aws_security_group.db_allow_tcp.id]
   maintenance_window      = "Mon:00:00-Mon:01:00"
-  publicly_accessible     = true
+  publicly_accessible     = false
   skip_final_snapshot     = true
   multi_az                = true
   backup_retention_period = 0
