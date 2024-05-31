@@ -62,3 +62,13 @@ variable "subnet_count" {
     private = 2
   }
 }
+
+variable "hosted_zone_name" {
+  description = "Name of the hosted zone"
+  type        = string
+}
+
+variable "domain_name" {
+  description = "Domain name"
+  type        = string
+}
