@@ -41,7 +41,7 @@ resource "random_password" "master_password" {
   override_special = "_!%^"
 }
 
-resource "aws_db_instance" "virtual_spider_zoo_db" {
+resource "aws_db_instance" "great_notes_db" {
   identifier              = var.db_name
   username                = var.db_username
   password                = random_password.master_password.result
@@ -71,8 +71,8 @@ resource "aws_secretsmanager_secret_version" "rds_credentials" {
   {
     db_username = "${var.db_name}"
     db_password = "${random_password.master_password.result}"
-    db_host     = "${aws_db_instance.virtual_spider_zoo_db.endpoint}"
-    db_port     = "${aws_db_instance.virtual_spider_zoo_db.port}"
+    db_host     = "${aws_db_instance.great_notes_db.endpoint}"
+    db_port     = "${aws_db_instance.great_notes_db.port}"
   }
   EOF
 }
