@@ -18,7 +18,6 @@ data "aws_iam_policy_document" "deploy_assume_role" {
 resource "aws_iam_role" "aws_deploy_role" {
   name               = "aws_deploy_role"
   assume_role_policy = data.aws_iam_policy_document.deploy_assume_role.json
-  tags               = var.common_tags
 }
 
 # Attaching policies to role
