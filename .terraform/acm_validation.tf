@@ -5,8 +5,6 @@ resource "aws_route53_zone" "zone_great_notes" {
   lifecycle {
     prevent_destroy = true
   }
-
-  tags = var.common_tags
 }
 
 resource "aws_acm_certificate" "default" {
@@ -15,8 +13,6 @@ resource "aws_acm_certificate" "default" {
   lifecycle {
     prevent_destroy = true
   }
-
-  tags = var.common_tags
 }
 
 resource "aws_route53_record" "cert_validation_record" {
