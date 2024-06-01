@@ -52,6 +52,7 @@ export default (_env, argv) => {
       port: 3000,
       hot: true,
       open: true,
+      historyApiFallback: true,
       proxy: [
         {
           context: ["/api"],
