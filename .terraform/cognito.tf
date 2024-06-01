@@ -30,7 +30,7 @@ resource "aws_cognito_user_pool_client" "api_client" {
   name         = "greatnotes-client"
   user_pool_id = aws_cognito_user_pool.pool.id
 
-  callback_urls = ["http://localhost:3000/login"]
+  callback_urls = ["https://great-notes.projects.bbdgrad.com/login"]
 
   generate_secret = true
 
