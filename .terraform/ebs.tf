@@ -4,7 +4,6 @@ resource "aws_security_group" "ebs_allow_tcp" {
   description = "Allow TCP inbound traffic and outbound traffic"
   vpc_id      = aws_vpc.default_vpc.id
 
-  tags = var.common_tags
 
   ingress {
     description = "Allow all traffic through HTTP"
@@ -69,7 +68,6 @@ data "aws_iam_policy_document" "assume_role" {
 resource "aws_iam_role" "aws_ebs_service_role" {
   name               = "aws_ebs_service_role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
-  tags               = var.common_tags
 }
 
 # Attaching policies to role
@@ -108,7 +106,6 @@ module "key_pair" {
 resource "aws_elastic_beanstalk_application" "great_notes_app" {
   name        = "great-notes-app"
   description = "Great Notes App"
-  tags        = var.common_tags
 }
 
 resource "aws_elastic_beanstalk_environment" "great_notes_app_env" {
@@ -116,7 +113,6 @@ resource "aws_elastic_beanstalk_environment" "great_notes_app_env" {
   application         = aws_elastic_beanstalk_application.great_notes_app.name
   solution_stack_name = "64bit Amazon Linux 2023 v4.3.2 running Docker"
   cname_prefix        = "great-notes"
-  tags                = var.common_tags
 
   setting {
     namespace = "aws:ec2:vpc"

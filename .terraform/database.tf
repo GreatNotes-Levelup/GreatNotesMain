@@ -4,8 +4,6 @@ resource "aws_security_group" "db_allow_tcp" {
   description = "Allow TCP inbound traffic and outbound traffic"
   vpc_id      = aws_vpc.default_vpc.id
 
-  tags = var.common_tags
-
   ingress {
     description     = "Allow all traffic from only ebs sg"
     from_port       = "5432"
@@ -27,8 +25,6 @@ resource "aws_security_group" "db_allow_tcp" {
 resource "aws_db_subnet_group" "db_subnet_group" {
   name       = "${var.vpc_name}-private-subnet-group"
   subnet_ids = aws_subnet.private_subnets[*].id
-
-  tags = var.common_tags
 }
 
 #########################################
@@ -57,8 +53,6 @@ resource "aws_db_instance" "great_notes_db" {
   skip_final_snapshot     = true
   multi_az                = true
   backup_retention_period = 0
-
-  tags = var.common_tags
 }
 
 resource "aws_secretsmanager_secret" "rds_credentials" {

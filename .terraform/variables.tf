@@ -62,3 +62,8 @@ variable "subnet_count" {
     private = 2
   }
 }
+
+variable "domain_name" {
+  description = "Domain name"
+  type        = string
+}
