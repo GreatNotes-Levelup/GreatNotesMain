@@ -11,10 +11,16 @@ router.get('/', (req, res) => {
     }
   };
 
+  let redirect_uri = process.env.NODE_ENV === "development" ? "http://localhost:3000/login" : process.env.REDIRECT_URI;
+
+  if (redirect_uri === undefined) {
+    console.error("Redirect URI wasn't set");
+  }
+
   let params = {
     "grant_type": "authorization_code",
     "code": req.query.code,
-    "redirect_uri": "http://localhost:3000/oauth_code",
+    "redirect_uri": redirect_uri,
     "client_id": process.env.AWS_CLIENT_ID,
     "client_secret": process.env.AWS_CLIENT_SECRET
   };
@@ -38,6 +44,14 @@ router.get('/', (req, res) => {
     res.status(500).json("Auth failed!");
   })
 
+});
+
+router.get('/client_id', (req, res) => {
+  if (!process.env.AWS_CLIENT_ID) {
+    res.status(500).json("Client ID not found on the server");
+  } else {
+    res.json(process.env.AWS_CLIENT_ID);
+  }
 });
 
 

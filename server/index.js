@@ -10,6 +10,18 @@ const app = express();
 
 app.use(express.json());
 
+console.log(process.env.NODE_ENV);
+
+app.use((req, res, next) => {
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : 'https://great-notes.projects.bbdgrad.com'
+  );
+  next();
+});
+
 app.use(express.static('dist'));
 app.use('/api/notes', notes);
 app.use('/api/auth', auth);
