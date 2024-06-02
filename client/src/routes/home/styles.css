@@ -1,0 +1,20 @@
+#home-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgb(6,79,120);
+  background: radial-gradient(ellipse, rgb(34, 72, 94) -80%, rgb(22, 22, 22) 80%);
+  height: 100%;
+}
+
+#home-page h1 {
+  font-size: 4rem;
+  font-weight: 400;
+  color: var(--primary-color);
+}
+
+#home-page h4 {
+  font-size: 2rem;
+  font-weight: 350;
+}

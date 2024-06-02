@@ -68,7 +68,7 @@ const AppBar = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <MAppBar position="static">
         <Toolbar className="nav-bar-root">
           <IconButton>

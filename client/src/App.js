@@ -38,14 +38,12 @@ export default function App() {
           <Router>
             <div className="app">
               <AppBar />
-              <div className="body">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/editor" element={<MarkdownEditor />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="*" element={<h1>404 Not found</h1>} />
-                </Routes>
-              </div>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/editor" element={<MarkdownEditor />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="*" element={<h1>404 Not found</h1>} />
+              </Routes>
             </div>
           </Router>
         </ThemeProvider>
