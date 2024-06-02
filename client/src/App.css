@@ -28,6 +28,7 @@
 .app-bar__nav ul {
   list-style: none;
   display: flex;
+  align-items: center;
 }
 
 .app-bar__nav ul li {
