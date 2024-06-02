@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getApiURL } from '../../utils.js';
 import { UserContext } from '../UserContext.js';
-import { Avatar, Button, Menu, MenuItem, Tooltip } from '@mui/material';
+import { AppBar as MAppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import './styles.css';
 
 const AppBar = () => {
@@ -67,26 +68,27 @@ const AppBar = () => {
   };
 
   return (
-    <div className="app-bar bg-red-500">
-      <div className="app-bar__logo">
-        <Link to="/">Logo</Link>
-      </div>
-      <nav className="app-bar__nav">
-        <ul>
-          <li>
-            <Link to="/">
-              <Button>Home</Button>
-            </Link>
-          </li>
-          <li>
-            <Link to="/editor">
-              <Button>New Note</Button>
-            </Link>
-          </li>
-          <li>
-            {!currentUser && <Button onClick={onLogin}>Login</Button>}
-            {currentUser && (
-              <>
+    <Box sx={{ flexGrow: 1 }}>
+      <MAppBar position="static">
+        <Toolbar className="nav-bar-root">
+          <IconButton>
+            <MenuIcon />
+          </IconButton>
+          <nav className="app-bar__nav">
+          {!currentUser && <Button onClick={onLogin}>Login</Button>}
+          {currentUser &&
+            <ul>
+              <li>
+                <Link to="/">
+                  <Button >Home</Button>
+                </Link>
+              </li>
+              <li>
+                <Link to="/editor">
+                  <Button >New Note</Button>
+                </Link>
+              </li>
+              <li>
                 <Tooltip title="Account">
                   <Button
                     id="user-profile-button"
@@ -111,12 +113,13 @@ const AppBar = () => {
                 >
                   <MenuItem onClick={onLogout}>Logout</MenuItem>
                 </Menu>
-              </>
-            )}
-          </li>
-        </ul>
-      </nav>
-    </div>
+              </li>
+            </ul>
+            }
+          </nav>
+        </Toolbar>
+      </MAppBar>
+    </Box>
   );
 };
 

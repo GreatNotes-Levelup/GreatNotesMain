@@ -4,3 +4,7 @@
   gap: 0.5rem;
   cursor: pointer;
 }
+
+.nav-bar-root {
+  justify-content: space-between;
+}
