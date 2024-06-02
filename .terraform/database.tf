@@ -31,28 +31,22 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 # DATABASE
 #########################################
 # RDS Database
-resource "random_password" "master_password" {
-  length           = 16
-  special          = true
-  override_special = "_!%^"
-}
-
 resource "aws_db_instance" "great_notes_db" {
-  identifier              = var.db_name
-  username                = var.db_username
-  password                = random_password.master_password.result
-  allocated_storage       = 20
-  storage_type            = "gp2"
-  engine                  = "postgres"
-  engine_version          = "15.6"
-  instance_class          = "db.t3.micro"
-  db_subnet_group_name    = aws_db_subnet_group.db_subnet_group.name
-  vpc_security_group_ids  = [aws_security_group.db_allow_tcp.id]
-  maintenance_window      = "Mon:00:00-Mon:01:00"
-  publicly_accessible     = false
-  skip_final_snapshot     = true
-  multi_az                = true
-  backup_retention_period = 0
+  identifier                  = var.db_name
+  username                    = var.db_username
+  manage_master_user_password = true
+  allocated_storage           = 20
+  storage_type                = "gp2"
+  engine                      = "postgres"
+  engine_version              = "15.6"
+  instance_class              = "db.t3.micro"
+  db_subnet_group_name        = aws_db_subnet_group.db_subnet_group.name  
+  vpc_security_group_ids      = [aws_security_group.db_allow_tcp.id]
+  maintenance_window          = "Mon:00:00-Mon:01:00"
+  publicly_accessible         = false
+  skip_final_snapshot         = true
+  multi_az                    = true
+  backup_retention_period     = 0
 }
 
 resource "aws_secretsmanager_secret" "rds_credentials" {
@@ -63,10 +57,9 @@ resource "aws_secretsmanager_secret_version" "rds_credentials" {
   secret_id     = aws_secretsmanager_secret.rds_credentials.id
   secret_string = <<EOF
   {
-    db_username = "${var.db_name}"
-    db_password = "${random_password.master_password.result}"
-    db_host     = "${aws_db_instance.great_notes_db.endpoint}"
-    db_port     = "${aws_db_instance.great_notes_db.port}"
+    db_username = ${var.db_username}
+    db_host     = ${aws_db_instance.great_notes_db.endpoint}
+    db_port     = ${aws_db_instance.great_notes_db.port}
   }
   EOF
 }
