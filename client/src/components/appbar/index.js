@@ -75,6 +75,8 @@ const AppBar = () => {
             <MenuIcon />
           </IconButton>
           <nav className="app-bar__nav">
+          {!currentUser && <Button onClick={onLogin}>Login</Button>}
+          {currentUser &&
             <ul>
               <li>
                 <Link to="/">
@@ -87,37 +89,33 @@ const AppBar = () => {
                 </Link>
               </li>
               <li>
-                {!currentUser && <Button onClick={onLogin}>Login</Button>}
-                {currentUser && (
-                  <>
-                    <Tooltip title="Account">
-                      <Button
-                        id="user-profile-button"
-                        className="user-display"
-                        aria-controls={open ? 'basic-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                        onClick={handleProfileClick}
-                      >
-                        {currentUser.name}
-                        <Avatar src={currentUser.picture} />
-                      </Button>
-                    </Tooltip>
-                    <Menu
-                      id="basic-menu"
-                      anchorEl={anchorEl}
-                      open={open}
-                      onClose={handleProfileClose}
-                      MenuListProps={{
-                        'aria-labelledby': 'user-profile-button',
-                      }}
-                    >
-                      <MenuItem onClick={onLogout}>Logout</MenuItem>
-                    </Menu>
-                  </>
-                )}
+                <Tooltip title="Account">
+                  <Button
+                    id="user-profile-button"
+                    className="user-display"
+                    aria-controls={open ? 'basic-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleProfileClick}
+                  >
+                    {currentUser.name}
+                    <Avatar src={currentUser.picture} />
+                  </Button>
+                </Tooltip>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleProfileClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'user-profile-button',
+                  }}
+                >
+                  <MenuItem onClick={onLogout}>Logout</MenuItem>
+                </Menu>
               </li>
             </ul>
+            }
           </nav>
         </Toolbar>
       </MAppBar>
