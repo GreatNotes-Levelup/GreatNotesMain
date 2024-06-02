@@ -32,7 +32,7 @@ const MarkdownEditor = () => {
   const [markdownText, setMarkdownText] = useState(defaultMarkdown);
 
   return (
-    <main>
+    <main id="editor-page">
       <section className="">
         <textarea
           value={markdownText}

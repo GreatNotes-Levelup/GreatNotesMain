@@ -1,15 +1,15 @@
-main {
+#editor-page {
     display: flex;
-    overflow: hidden;
+    /* overflow: hidden; */
     min-height: 100%;
   }
   
-  section, article {
+  #editor-page section, article {
     flex: 1;
   }
 
 
-  textarea {
+  #editor-page textarea {
     width: 100%;
     height: 100%;
     font-size: 16px;
@@ -20,7 +20,7 @@ main {
 
 
 
-  .markdown-body {
+  #editor-page .markdown-body {
     box-sizing: border-box;
     min-width: 200px;
     max-width: 980px;
@@ -29,7 +29,7 @@ main {
 }
 
 @media (max-width: 767px) {
-    .markdown-body {
+  #editor-page .markdown-body {
         padding: 15px;
     }
 }
