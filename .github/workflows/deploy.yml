@@ -1,0 +1,67 @@
+name: deploy-to-eb
+
+on:
+  push:
+    branches: [ sphe/feat/terraform-and-deploy ]
+    paths-ignore: 
+    - '.terraform/**'
+    - 'database'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Assume the deploy pipeline user role
+        uses: aws-actions/configure-aws-credentials@v4.0.1
+        with:
+          role-to-assume: ${{ secrets.ASSUME_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+      
+      - name: Get secrets by name and by ARN
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            credentials
+          parse-json-secrets: true
+
+      - name: Create .env file
+        run: cat > .env <<EOF |
+          DB_USER=${{ env.USERNAME }}
+          DB_HOST=${{ env.HOST }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_PORT=${{ env.PORT }}
+          DB_PASSWORD=${{ env.PASSWORD }}
+          AWS_CLIENT_ID=${{ secrets.AWS_CLIENT_ID}}
+          AWS_CLIENT_SECRET=${{ secrets.AWS_CLIENT_SECRET }}
+          AWS_USER_POOL_ID=${{ secrets.AWS_USER_POOL_ID }}
+          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
+          EOF
+
+      - name: Create ZIP deployment package
+        run: zip -r bundle.zip ./
+
+      - name: Upload package to S3 bucket
+        run: aws s3 cp node-app.zip s3://great-notes-state-bucket/
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name great-notes-app \
+          --source-bundle S3Bucket="great-notes-state-bucket",S3Key="bundle.zip" \
+          --version-label "ver-${{ github.sha }}" \
+          --description "commit-sha-${{ github.sha }}"
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk update-environment --environment-name great-notes-app-env --version-label "ver-${{ github.sha }}"
