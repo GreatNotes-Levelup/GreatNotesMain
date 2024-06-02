@@ -2,37 +2,30 @@ import React, { useState } from "react" // Optional for React 17+
 import "./App.css";
 import MarkdownEditor from "./routes/mardown-editor/index.js"; // Consider adding .js
 import Login from "./routes/login/index.js";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, json } from "react-router-dom";
 import AppBar from "./components/appbar/index.js"; // Consider adding .js
 import { UserContext } from "./components/UserContext.js";
+import { parseJwt } from "./utils.js";
 
 
 export default function App() {
-  let accessToken = window.localStorage.getItem('greatnotes-access-token')
-  let user = null;
-  if (accessToken) {
-    user = {
-      accessToken: window.localStorage.getItem('greatnotes-access-token'),
-      refreshToken: window.localStorage.getItem('greatnotes-refresh-token')
-    }
-  }
+  let userFromStorage = window.localStorage.getItem('greatnotes-user');
+  let user = userFromStorage ? JSON.parse(userFromStorage) : null;
   const [currentUser, setCurrentUserState] = useState(user);
-
-  const setCurrentUser = (user) => {
-    window.localStorage.setItem('greatnotes-access-token', user['access_token']);
-    window.localStorage.setItem('greatnotes-refresh-token', user['refresh_token']);
-    setCurrentUserState({
-      accessToken: user['access_token'],
-      refreshToken: user['refresh_token']
-    });
+  
+  const setCurrentUser = async (user) => {
+    let userInfo = parseJwt(user['id_token']);
+    let userLocal = user;
+    userLocal["name"] = userInfo["name"];
+    userLocal["picture"] = userInfo["picture"];
+    window.localStorage.setItem('greatnotes-user', JSON.stringify(userLocal));
+    setCurrentUserState(userLocal);
   }
 
   const removeCurrentUser = () => {
-    window.localStorage.removeItem('greatnotes-access-token');
-    window.localStorage.removeItem('greatnotes-refresh-token');
+    window.localStorage.removeItem('greatnotes-user');
     setCurrentUserState(null);
   }
-
 
     return (
       <UserContext.Provider value={{currentUser, setCurrentUser, removeCurrentUser}}>
