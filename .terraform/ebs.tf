@@ -13,6 +13,14 @@ resource "aws_security_group" "ebs_allow_tcp" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  egress {
+    description = "Allow all traffic through HTTP"
+    from_port   = "80"
+    to_port     = "80"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   ingress {
     description = "Allow all traffic through HTTPS"
     from_port   = "443"
@@ -91,6 +99,11 @@ resource "aws_iam_role_policy_attachment" "AutoScalingFullAccess" {
   policy_arn = "arn:aws:iam::aws:policy/AutoScalingFullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "AWSElasticLoadBalancingFullAccess" {
+  role       = aws_iam_role.aws_ebs_service_role.name
+  policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
+}
+
 resource "aws_iam_instance_profile" "aws_ebs_profile" {
   name = "aws-elasticbeanstalk-ec2-role"
   role = aws_iam_role.aws_ebs_service_role.name
@@ -122,6 +135,24 @@ resource "aws_elastic_beanstalk_environment" "great_notes_app_env" {
 
   setting {
     namespace = "aws:ec2:vpc"
+    name      = "ELBSubnets"
+    value     = join(",", aws_subnet.public_subnet[*].id)
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "AssociatePublicIpAddress"
+    value     = "true"
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBScheme"
+    value     = "public"
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
     name      = "Subnets"
     value     = join(",", aws_subnet.public_subnet[*].id)
   }
@@ -135,7 +166,25 @@ resource "aws_elastic_beanstalk_environment" "great_notes_app_env" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "EnvironmentType"
-    value     = "SingleInstance"
+    value     = "LoadBalanced"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerType"
+    value     = "network"
+  }
+
+  setting {
+    namespace = "aws:elb:loadbalancer"
+    name      = "SecurityGroups"
+    value     = aws_security_group.ebs_allow_tcp.id
+  }
+
+  setting {
+    namespace = "aws:elb:loadbalancer"
+    name      = "ManagedSecurityGroup"
+    value     = aws_security_group.ebs_allow_tcp.id
   }
 
   setting {
@@ -161,4 +210,12 @@ resource "aws_elastic_beanstalk_environment" "great_notes_app_env" {
     name      = "SecurityGroups"
     value     = aws_security_group.ebs_allow_tcp.id
   }
+
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
+output "url" {
+  value = aws_elastic_beanstalk_environment.great_notes_app_env.endpoint_url
 }

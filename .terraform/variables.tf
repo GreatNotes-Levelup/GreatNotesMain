@@ -67,3 +67,18 @@ variable "domain_name" {
   description = "Domain name"
   type        = string
 }
+
+variable "target_group_arn" {
+  description = "ARN of the target group"
+  type        = string
+}
+
+variable "certificate_arn" {
+  description = "ARN of the certificate"
+  type        = string
+}
+
+variable "load_balancer_arn" {
+  description = "ARN of the load balancer"
+  type        = string
+}
