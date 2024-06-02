@@ -1,4 +1,6 @@
 import { Router } from "express";
+import jwt from 'jsonwebtoken';
+import { setUserContext } from "../services/userContext.js";
 
 const router = Router();
 
@@ -29,7 +31,18 @@ router.get('/', (req, res) => {
     console.log(oauth_res);
     if(oauth_res.ok) {
       oauth_res.json().then((data) => {
+        const token = data.id_token;
+
+        const decodedToken = jwt.decode(token, { complete: true });
+
+        const username = decodedToken.payload['cognito:username'];
+        const email=decodedToken.payload['email'];
+        const userId = decodedToken.payload.identities[0].userId;
+
+        setUserContext({ userId, username, email});
+
         res.json(data);
+
       })
       .catch(() => {
         res.status(500).json("Authentication succeeded but getting the json data failed");
