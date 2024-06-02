@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getApiURL } from '../../utils.js';
 import { UserContext } from '../UserContext.js';
-import { Avatar, Button, Menu, MenuItem, Tooltip } from '@mui/material';
+import { AppBar as MAppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import './styles.css';
 
 const AppBar = () => {
@@ -67,56 +68,60 @@ const AppBar = () => {
   };
 
   return (
-    <div className="app-bar bg-red-500">
-      <div className="app-bar__logo">
-        <Link to="/">Logo</Link>
-      </div>
-      <nav className="app-bar__nav">
-        <ul>
-          <li>
-            <Link to="/">
-              <Button>Home</Button>
-            </Link>
-          </li>
-          <li>
-            <Link to="/editor">
-              <Button>New Note</Button>
-            </Link>
-          </li>
-          <li>
-            {!currentUser && <Button onClick={onLogin}>Login</Button>}
-            {currentUser && (
-              <>
-                <Tooltip title="Account">
-                  <Button
-                    id="user-profile-button"
-                    className="user-display"
-                    aria-controls={open ? 'basic-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    onClick={handleProfileClick}
-                  >
-                    {currentUser.name}
-                    <Avatar src={currentUser.picture} />
-                  </Button>
-                </Tooltip>
-                <Menu
-                  id="basic-menu"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleProfileClose}
-                  MenuListProps={{
-                    'aria-labelledby': 'user-profile-button',
-                  }}
-                >
-                  <MenuItem onClick={onLogout}>Logout</MenuItem>
-                </Menu>
-              </>
-            )}
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <Box sx={{ flexGrow: 1 }}>
+      <MAppBar position="static">
+        <Toolbar className="nav-bar-root">
+          <IconButton>
+            <MenuIcon />
+          </IconButton>
+          <nav className="app-bar__nav">
+            <ul>
+              <li>
+                <Link to="/">
+                  <Button >Home</Button>
+                </Link>
+              </li>
+              <li>
+                <Link to="/editor">
+                  <Button >New Note</Button>
+                </Link>
+              </li>
+              <li>
+                {!currentUser && <Button onClick={onLogin}>Login</Button>}
+                {currentUser && (
+                  <>
+                    <Tooltip title="Account">
+                      <Button
+                        id="user-profile-button"
+                        className="user-display"
+                        aria-controls={open ? 'basic-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleProfileClick}
+                      >
+                        {currentUser.name}
+                        <Avatar src={currentUser.picture} />
+                      </Button>
+                    </Tooltip>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleProfileClose}
+                      MenuListProps={{
+                        'aria-labelledby': 'user-profile-button',
+                      }}
+                    >
+                      <MenuItem onClick={onLogout}>Logout</MenuItem>
+                    </Menu>
+                  </>
+                )}
+              </li>
+            </ul>
+          </nav>
+        </Toolbar>
+      </MAppBar>
+    </Box>
   );
 };
 
