@@ -1,5 +1,10 @@
 resource "aws_cognito_user_pool" "pool" {
   name = "greatnotes-user-pool"
+
+  mfa_configuration = "OPTIONAL"
+  software_token_mfa_configuration {
+    enabled = true
+  }
 }
 
 resource "aws_cognito_user_pool_domain" "main" {
