@@ -34,7 +34,7 @@ jobs:
           parse-json-secrets: true
 
       - name: Create .env file
-        run: cat > .env <<EOF |
+        run: cat > ./server/.env <<EOF |
           DB_USER=${{ env.USERNAME }}
           DB_HOST=${{ env.HOST }}
           DB_NAME=${{ secrets.DB_NAME }}
@@ -52,7 +52,7 @@ jobs:
         run: zip -r bundle.zip ./
 
       - name: Upload package to S3 bucket
-        run: aws s3 cp node-app.zip s3://great-notes-state-bucket/
+        run: aws s3 cp bundle.zip s3://great-notes-state-bucket/
 
       - name: Create new ElasticBeanstalk Application Version
         run: |
@@ -64,4 +64,4 @@ jobs:
 
       - name: Deploy new ElasticBeanstalk Application Version
         run: |
-          aws elasticbeanstalk update-environment --environment-name great-notes-app-env --version-label "ver-${{ github.sha }}"
+          aws elasticbeanstalk update-environment --environment-name great-notes-app-env --version-label "ver-${{ github.sha }}"  
