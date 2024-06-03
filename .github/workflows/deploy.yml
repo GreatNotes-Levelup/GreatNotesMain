@@ -41,6 +41,7 @@ jobs:
           DB_NAME=${{ secrets.DB_NAME }}
           DB_PORT=${{ env.CREDENTIALS_PORT }}
           DB_PASSWORD=${{ env.CREDENTIALS_PASSWORD }}
+          PORT=${{ secrets.PORT }}
           AWS_CLIENT_ID=${{ secrets.AWS_CLIENT_ID}}
           AWS_CLIENT_SECRET=${{ secrets.AWS_CLIENT_SECRET }}
           AWS_USER_POOL_ID=${{ secrets.AWS_USER_POOL_ID }}
