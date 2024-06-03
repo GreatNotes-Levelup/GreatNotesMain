@@ -49,16 +49,18 @@ jobs:
           AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
           EOF
       
-      - name: Building app
+      - name: Node setup
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: |
+      
+      - name: Building app
+        run: |
           cd client && npm install && npm run build
           cd ../server && npm install
 
       - name: Create ZIP deployment package
-        run: zip -r bundle.zip ./server
+        run: zip -r bundle.zip ./server/*
 
       - name: Upload package to S3 bucket
         run: aws s3 cp bundle.zip s3://great-notes-state-bucket/
