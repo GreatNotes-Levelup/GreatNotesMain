@@ -60,7 +60,7 @@ jobs:
           cd ../server && npm install
 
       - name: Create ZIP deployment package
-        run: zip -r bundle.zip ./server/*
+        run: cd server && zip -r ../bundle.zip .
 
       - name: Upload package to S3 bucket
         run: aws s3 cp bundle.zip s3://great-notes-state-bucket/
