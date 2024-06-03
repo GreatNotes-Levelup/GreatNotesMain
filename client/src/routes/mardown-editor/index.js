@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./styles.css";
 import { marked } from "marked";
+import { getApiURL } from '../../utils.js';
 
 const defaultMarkdown = `
 # Welcome to Great Note!
@@ -31,9 +32,34 @@ Start using Great Note today and unlock a world of possibilities for organizing 
 const MarkdownEditor = () => {
   const [markdownText, setMarkdownText] = useState(defaultMarkdown);
 
+  const handleSave = async () => {
+    const content_url = markdownText;
+
+    try {
+      let apiURL = getApiURL();
+      const response = await fetch(apiURL +'/api/notes/save-note', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content_url }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Note saved successfully:', result);
+    } catch (error) {
+      console.error('Error saving note:', error);
+    }
+  };
+
   return (
     <main id="editor-page">
-      <section className="">
+      <section className="editor-section">
+        <button className="save-button" onClick={handleSave}>Save</button>
         <textarea
           value={markdownText}
           onChange={(e) => setMarkdownText(e.target.value)}

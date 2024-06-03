@@ -2,11 +2,18 @@ import express from 'express';
 import notes from './routes/notes.js';
 import auth from './routes/auth.js';
 import users from './routes/users.js';
+import cors from 'cors';
 
 import { configDotenv } from 'dotenv';
 
 configDotenv();
 const app = express();
+
+app.use(cors({
+  origin: 'http://localhost:3000', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'] 
+}));
 
 app.use(express.json());
 
