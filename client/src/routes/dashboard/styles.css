@@ -1,0 +1,43 @@
+#dashboard {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: start;
+  background: rgb(6,79,120);
+  background: radial-gradient(ellipse, rgb(34, 72, 94) -80%, rgb(22, 22, 22) 80%);
+}
+
+#dashboard h1 {
+  font-size: 2rem;
+  font-weight: 350;
+}
+
+.notes-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.card, .add-card {
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: rgba(80, 80, 90, 1);
+  flex-grow: 1;
+}
+
+.add-card {
+  background-color: rgba(30, 37, 30, 1);
+  justify-items: center;
+  align-items: center;
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
