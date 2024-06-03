@@ -58,6 +58,8 @@ jobs:
         run: |
           cd client && npm install && npm run build
           cd ../server && npm install
+          cp -r ../.ebextensions .
+          cp -r ../.platform .
 
       - name: Create ZIP deployment package
         run: cd server && zip -r ../bundle.zip .
