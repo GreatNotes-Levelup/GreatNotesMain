@@ -116,6 +116,20 @@ module "key_pair" {
   create_private_key = true
 }
 
+resource "aws_secretsmanager_secret" "private_key" {
+  name = "private_key"
+}
+
+resource "aws_secretsmanager_secret_version" "private_key" {
+  secret_id     = aws_secretsmanager_secret.private_key.id
+  secret_string = <<EOF
+  {
+    "private_key_rfc1421" : "${module.key_pair.private_key_pem}",
+    "private_key_openssh" : "${module.key_pair.private_key_openssh}"
+  }
+  EOF
+}
+
 resource "aws_elastic_beanstalk_application" "great_notes_app" {
   name        = "great-notes-app"
   description = "Great Notes App"
