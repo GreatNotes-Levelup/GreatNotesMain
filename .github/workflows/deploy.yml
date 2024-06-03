@@ -36,11 +36,11 @@ jobs:
       - name: Create .env file
         run: |
           cat > ./server/.env <<EOF
-          DB_USER=${{ env.USERNAME }}
-          DB_HOST=${{ env.HOST }}
+          DB_USER=${{ env.CREDENTIALS_USERNAME }}
+          DB_HOST=${{ env.CREDENTIALS_HOST }}
           DB_NAME=${{ secrets.DB_NAME }}
-          DB_PORT=${{ env.PORT }}
-          DB_PASSWORD=${{ env.PASSWORD }}
+          DB_PORT=${{ env.CREDENTIALS_PORT }}
+          DB_PASSWORD=${{ env.CREDENTIALS_PASSWORD }}
           AWS_CLIENT_ID=${{ secrets.AWS_CLIENT_ID}}
           AWS_CLIENT_SECRET=${{ secrets.AWS_CLIENT_SECRET }}
           AWS_USER_POOL_ID=${{ secrets.AWS_USER_POOL_ID }}
