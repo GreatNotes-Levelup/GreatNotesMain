@@ -34,7 +34,8 @@ jobs:
           parse-json-secrets: true
 
       - name: Create .env file
-        run: cat > ./server/.env <<EOF |
+        run: |
+          cat > ./server/.env <<EOF
           DB_USER=${{ env.USERNAME }}
           DB_HOST=${{ env.HOST }}
           DB_NAME=${{ secrets.DB_NAME }}
