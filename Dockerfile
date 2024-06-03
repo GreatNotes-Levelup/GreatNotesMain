@@ -1,6 +1,6 @@
 FROM node:21-alpine AS builder
 
-RUN apt-get update && apt-get install -y \
+RUN yum update && yum install -y \
     git \
     zip \
     curl \
