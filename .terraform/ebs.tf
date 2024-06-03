@@ -138,7 +138,7 @@ resource "aws_elastic_beanstalk_application" "great_notes_app" {
 resource "aws_elastic_beanstalk_environment" "great_notes_app_env" {
   name                = "great-notes-app-env"
   application         = aws_elastic_beanstalk_application.great_notes_app.name
-  solution_stack_name = "64bit Amazon Linux 2023 v4.3.2 running Docker"
+  solution_stack_name = "64bit Amazon Linux 2023 v6.1.5 running Node.js 20"
   cname_prefix        = "great-notes"
 
   setting {
