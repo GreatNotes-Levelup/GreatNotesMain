@@ -74,12 +74,6 @@ variable "target_group_arn" {
   sensitive   = true
 }
 
-variable "certificate_arn" {
-  description = "ARN of the certificate"
-  type        = string
-  sensitive   = true
-}
-
 variable "load_balancer_arn" {
   description = "ARN of the load balancer"
   type        = string

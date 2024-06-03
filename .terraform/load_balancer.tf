@@ -3,7 +3,7 @@ resource "aws_lb_listener" "front_end" {
   port              = "443"
   protocol          = "TLS"
   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = var.certificate_arn
+  certificate_arn   = aws_acm_certificate.default.arn
   alpn_policy       = "HTTP1Only"
 
   default_action {
