@@ -16,6 +16,6 @@ WORKDIR /home/node/app
 RUN chown -R node:node /home/node/app
 USER node
 COPY --from=builder /build-stage/server ./
-EXPOSE 3000
+EXPOSE 8080
 
 CMD [ "node", "index.js" ]
