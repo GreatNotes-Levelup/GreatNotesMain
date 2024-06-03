@@ -1,4 +1,3 @@
--- Create the new table structure
 CREATE TABLE "Notes_new" (
     "note_id" BIGINT NOT NULL,
     "title" VARCHAR(255) NOT NULL,
@@ -22,15 +21,17 @@ INSERT INTO "Notes_new" (
 )
 SELECT
     "note_id",
-    '', 
-    '', 
+    '',
+    '',
     "owner_id",
-    "content_url", 
+    "content_url",
     "created_at",
     "updated_at",
     "is_public"
 FROM
     "Notes";
+
+ALTER TABLE "NoteAccess" DROP CONSTRAINT "noteaccess_note_id_foreign";
 
 DROP TABLE "Notes";
 
