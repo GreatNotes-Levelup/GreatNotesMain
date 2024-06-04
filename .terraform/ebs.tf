@@ -13,6 +13,14 @@ resource "aws_security_group" "ebs_allow_tcp" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "Allow all traffic through HTTP"
+    from_port   = "80"
+    to_port     = "8080"
+    protocol    = "tcp"
+    cidr_blocks = aws_subnet.public_subnet[*].cidr_block
+  }
+
   egress {
     description = "Allow all traffic through HTTP"
     from_port   = "80"
