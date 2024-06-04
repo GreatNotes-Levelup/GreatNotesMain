@@ -29,4 +29,33 @@ const getNoteByUser=async()=>{
   }
 }
 
-export {createNote,getNoteByUser}
+const getSharedNoteByUser=async()=>{
+  try {
+    const response =  await fetch(getApiURL()+'/api/notes//shared-notes', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.json();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+const saveNote = async(id,title,description, content)=>{
+  try {
+    const response =  await fetch(getApiURL()+`/api/notes/update-note/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({title:title, description:description, content:content}),
+    });
+    return response.json();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+export {createNote,getNoteByUser, saveNote, getSharedNoteByUser}

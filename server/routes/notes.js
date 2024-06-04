@@ -155,21 +155,25 @@ router.post('/add-access', async (req, res) => {
 });
 
 // Endpoint to save (update) a note
-router.put('/update-note', async (req, res) => {
+router.put('/update-note/:id', async (req, res) => {
   const { id } = req.params;
   const { title, description, content } = req.body;
 
   try {
-    const result = await pool.query(`
-      UPDATE "Notes" SET title = $1, description = $2, content = $3, updated_at = NOW()
-      WHERE note_id = $4 RETURNING *
-    `, [title, description, content, id]);
+    const result = await pool.query(
+      `UPDATE "Notes" 
+       SET title = $1, description = $2, content = $3, updated_at = NOW()
+       WHERE note_id = $4 
+       RETURNING *`,
+      [title, description, content, id]
+    );
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // Endpoint to delete a note
 router.delete('/delete-note', async (req, res) => {

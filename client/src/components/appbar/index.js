@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getApiURL } from '../../utils.js';
 import { UserContext } from '../UserContext.js';
 import { AppBar as MAppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, ArrowBack } from '@mui/icons-material';
 import './styles.css';
 
 const AppBar = () => {
@@ -71,21 +71,18 @@ const AppBar = () => {
     <Box>
       <MAppBar position="static">
         <Toolbar className="nav-bar-root">
+        <Link to="/dashboard">
           <IconButton>
-            <MenuIcon />
+            <ArrowBack/>
           </IconButton>
+          </Link>
           <nav className="app-bar__nav">
           {!currentUser && <Button onClick={onLogin}>Login</Button>}
           {currentUser &&
             <ul>
               <li>
-                <Link to="/">
+                <Link to="/dashboard">
                   <Button >Home</Button>
-                </Link>
-              </li>
-              <li>
-                <Link to="/editor">
-                  <Button >New Note</Button>
                 </Link>
               </li>
               <li>

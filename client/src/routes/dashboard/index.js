@@ -10,7 +10,7 @@ import {DialogActions} from '@mui/material';
 import {DialogContent} from '@mui/material';
 import {DialogContentText} from '@mui/material';
 import {DialogTitle} from '@mui/material';
-import { createNote,getNoteByUser } from '../../api/notes.js';
+import { createNote,getNoteByUser, getSharedNoteByUser } from '../../api/notes.js';
 
 
 const Dashboard = () => {
@@ -73,9 +73,11 @@ const Dashboard = () => {
 
   
   const [myNotes, setMyNotes] = useState([]);
+  const [sharedNotes, setSharedNotes] = useState([]);
 
   useEffect(()=>{
     getNoteByUser().then((notes)=>{setMyNotes(notes)});
+    getSharedNoteByUser().then((notes)=>{setSharedNotes(notes)});
   },[])
   return (
     <main id="dashboard">
@@ -86,9 +88,10 @@ const Dashboard = () => {
           <h3> New note</h3>
       </Button>
         {myNotes.map((item) => {
-          console.log("ITEM",item)
           return (
-            <div className="card" key={item["note_id"]}>
+            <div 
+            onClick={()=>navigate('/editor', { state: {response: item} })}
+            className="card" key={item["note_id"]}>
               <h3>{`${item.title}`}</h3>
               <p>
                 {
@@ -96,7 +99,7 @@ const Dashboard = () => {
                 }
               </p>
               <div className="bottom">
-                <date>{`${formatDate(item.updated_at)}`}</date>
+              <time datetime={`${formatDate(item.updated_at)}`}>{`${formatDate(item.updated_at)}`}</time>
                 <IconButton color="primary" onClick={() => navigate('/editor', { state: { item } })}>
                   <Edit />
                 </IconButton>
@@ -107,26 +110,29 @@ const Dashboard = () => {
       </section>
 
       <h1>Shared with me</h1>
-      <section className="notes-section">
-        {/* {notes.slice(2, 4).map((item, index) => {
+      {sharedNotes.length>0? <section className="notes-section">
+      {sharedNotes.map((item) => {
           return (
-            <div className="card" key={index}>
-              <h3>{`Note ${index}`}</h3>
+            <div 
+            onClick={()=>navigate('/editor', { state: {response: item} })}
+            className="card" key={item["note_id"]}>
+              <h3>{`${item.title}`}</h3>
               <p>
                 {
-                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+                  item.description
                 }
               </p>
               <div className="bottom">
-                <date>2024-05-30</date>
-                <IconButton>
+              <time datetime={`${formatDate(item.updated_at)}`}>{`${formatDate(item.updated_at)}`}</time>
+                <IconButton color="primary" onClick={() => navigate('/editor', { state: { item } })}>
                   <Edit />
                 </IconButton>
               </div>
             </div>
           );
-        })} */}
+        })}
       </section>
+      :<p>{"Nothing shared with you yet:)"}</p>}
 
       <Dialog
   open={open}
