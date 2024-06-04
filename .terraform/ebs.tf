@@ -169,6 +169,10 @@ resource "aws_secretsmanager_secret_version" "private_key" {
     "private_key_openssh" : "${module.key_pair.private_key_openssh}"
   }
   EOF
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_elastic_beanstalk_application" "great_notes_app" {

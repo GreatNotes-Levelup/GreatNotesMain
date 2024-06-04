@@ -69,4 +69,8 @@ resource "aws_secretsmanager_secret_version" "rds_credentials" {
     "port"     : "${aws_db_instance.great_notes_db.port}"
   }
   EOF
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
