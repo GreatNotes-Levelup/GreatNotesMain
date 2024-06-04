@@ -12,24 +12,8 @@ dotenv.config();
 const router = Router();
 router.use(bodyParser.json());
 
-// Endpoint to get all notes with pagination
-router.get('/all-notes', async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
-  const offset = (page - 1) * limit;
-
-  try {
-    const result = await pool.query('SELECT * FROM "Notes" ORDER BY "created_at" DESC LIMIT $1 OFFSET $2', [limit, offset]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
 // Endpoint to get all notes for user
 router.get('/all-user-notes', async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
-  const offset = (page - 1) * limit;
 
   const user = getUserContext();
 
@@ -44,7 +28,7 @@ router.get('/all-user-notes', async (req, res) => {
   }
 
   try {
-    const result = await pool.query('SELECT * FROM "Notes" WHERE owner_id = $1 ORDER BY "created_at" DESC LIMIT $2 OFFSET $3', [userId,limit, offset]);
+    const result = await pool.query('SELECT * FROM "Notes" WHERE owner_id = $1 ORDER BY "created_at" DESC', [userId]);
     res.json(result.rows);
   } catch (err) {
     console.error(err);

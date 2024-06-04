@@ -15,4 +15,18 @@ const createNote = async (formData)=>{
       }
 }
 
-export {createNote}
+const getNoteByUser=async()=>{
+  try {
+    const response =  await fetch(getApiURL()+'/api/notes/all-user-notes', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.json();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+export {createNote,getNoteByUser}

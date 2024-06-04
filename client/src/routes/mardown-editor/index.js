@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import { marked } from 'marked';
 import { Visibility, Save, Edit, Group } from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
 import {
   Divider,
   IconButton,
@@ -33,6 +34,10 @@ const style = {
 };
 
 const MarkdownEditor = () => {
+  const location = useLocation();
+  const { response } = location.state;
+
+  console.log(response);
   const [markdownText, setMarkdownText] = useState(defaultMarkdown);
   const [isPreview, setIsPreview] = useState(true);
   const [open, setOpen] = useState(false);

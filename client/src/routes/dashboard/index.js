@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './styles.css';
 import { IconButton } from '@mui/material';
 import { AddCircle, Edit } from '@mui/icons-material';
@@ -11,10 +10,8 @@ import {DialogActions} from '@mui/material';
 import {DialogContent} from '@mui/material';
 import {DialogContentText} from '@mui/material';
 import {DialogTitle} from '@mui/material';
-import { createNote } from '../../api/notes.js';
+import { createNote,getNoteByUser } from '../../api/notes.js';
 
-
-const notes = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -63,10 +60,23 @@ const Dashboard = () => {
 
     if (isValid) {
       const response = await createNote(formData);
-      console.table(response);
-      navigate('/editor');
+      
+      navigate('/editor', { state: { response } });
     }
   };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString(undefined, options);
+  };
+
+  
+  const [myNotes, setMyNotes] = useState([]);
+
+  useEffect(()=>{
+    getNoteByUser().then((notes)=>{setMyNotes(notes)});
+  },[])
   return (
     <main id="dashboard">
       <h1>My Notes</h1>
@@ -75,18 +85,19 @@ const Dashboard = () => {
         <AddCircle />
           <h3> New note</h3>
       </Button>
-        {notes.map((item) => {
+        {myNotes.map((item) => {
+          console.log("ITEM",item)
           return (
-            <div className="card" key={item}>
-              <h3>{`Note ${item}`}</h3>
+            <div className="card" key={item["note_id"]}>
+              <h3>{`${item.title}`}</h3>
               <p>
                 {
-                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+                  item.description
                 }
               </p>
               <div className="bottom">
-                <date>2024-05-30</date>
-                <IconButton color="primary" onClick={() => navigate('/editor')}>
+                <date>{`${formatDate(item.updated_at)}`}</date>
+                <IconButton color="primary" onClick={() => navigate('/editor', { state: { item } })}>
                   <Edit />
                 </IconButton>
               </div>
@@ -97,10 +108,10 @@ const Dashboard = () => {
 
       <h1>Shared with me</h1>
       <section className="notes-section">
-        {notes.slice(2, 4).map((item) => {
+        {/* {notes.slice(2, 4).map((item, index) => {
           return (
-            <div className="card" key={item}>
-              <h3>{`Note ${item}`}</h3>
+            <div className="card" key={index}>
+              <h3>{`Note ${index}`}</h3>
               <p>
                 {
                   'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
@@ -114,7 +125,7 @@ const Dashboard = () => {
               </div>
             </div>
           );
-        })}
+        })} */}
       </section>
 
       <Dialog
