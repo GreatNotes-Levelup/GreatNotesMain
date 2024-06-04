@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
     }
   };
 
-  let redirect_uri = process.env.NODE_ENV === "development" ? "http://localhost:3000/login" : process.env.REDIRECT_URI;
+  let redirect_uri = process.env.NODE_ENV === "development" ? "http://localhost:3000/login" : "https://great-notes.projects.bbdgrad.com/login";
 
   if (redirect_uri === undefined) {
     console.error("Redirect URI wasn't set");
