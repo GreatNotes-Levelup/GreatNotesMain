@@ -9,7 +9,7 @@ resource "aws_security_group" "db_allow_tcp" {
     from_port       = "5432"
     to_port         = "5432"
     protocol        = "tcp"
-    security_groups = [aws_security_group.ebs_allow_tcp.id]
+    security_groups = [aws_security_group.ebs_allow_tcp.id, aws_security_group.allow_ssh.id]
   }
 
   egress {
@@ -17,7 +17,7 @@ resource "aws_security_group" "db_allow_tcp" {
     from_port       = "5432"
     to_port         = "5432"
     protocol        = "tcp"
-    security_groups = [aws_security_group.ebs_allow_tcp.id]
+    security_groups = [aws_security_group.ebs_allow_tcp.id, aws_security_group.allow_ssh.id]
   }
 }
 

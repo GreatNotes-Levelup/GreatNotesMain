@@ -18,7 +18,7 @@ resource "aws_security_group" "ebs_allow_tcp" {
     from_port   = "8080"
     to_port     = "8080"
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = aws_subnet.public_subnet[*].cidr_block
   }
 
   egress {
@@ -26,7 +26,7 @@ resource "aws_security_group" "ebs_allow_tcp" {
     from_port   = "8080"
     to_port     = "8080"
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = aws_subnet.public_subnet[*].cidr_block
   }
 
   egress {
@@ -68,6 +68,31 @@ resource "aws_security_group" "ebs_allow_tcp" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+resource "aws_security_group" "ebs_default" {
+  vpc_id = aws_vpc.default_vpc.id
+
+  ingress {
+    description = "Allow all traffic through HTTP"
+    from_port   = "80"
+    to_port     = "80"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Allow all traffic through HTTP"
+    from_port   = "80"
+    to_port     = "80"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    ignore_changes = [tags, description]
+  }
+
 }
 
 # Service role creation for elastic beanstalk
