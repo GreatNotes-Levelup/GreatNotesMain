@@ -18,7 +18,7 @@ resource "aws_security_group" "ebs_allow_tcp" {
     from_port   = "8080"
     to_port     = "8080"
     protocol    = "tcp"
-    cidr_blocks = aws_subnet.public_subnet[*].cidr_block
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -26,7 +26,7 @@ resource "aws_security_group" "ebs_allow_tcp" {
     from_port   = "8080"
     to_port     = "8080"
     protocol    = "tcp"
-    cidr_blocks = aws_subnet.public_subnet[*].cidr_block
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {

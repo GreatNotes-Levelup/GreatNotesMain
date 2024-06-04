@@ -45,4 +45,8 @@ resource "aws_instance" "bastion_host" {
   associate_public_ip_address = true
 
   subnet_id = aws_subnet.public_subnet[count.index].id
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
