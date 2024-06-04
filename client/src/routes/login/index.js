@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getApiURL } from '../../utils.js';
-import { UserContext } from '../../components/UserContext.js';
+import useAuth from '../../components/UserContext.js';
 import './styles.css';
 
 const Login = () => {
   const [searchParams, _setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { setCurrentUser } = useContext(UserContext);
+  const { setCurrentUser } = useAuth();
 
   let code = searchParams.get('code');
 
@@ -32,7 +32,7 @@ const Login = () => {
       }
       res.json().then((data) => {
         setCurrentUser(data);
-        navigate("/");
+        navigate("/dashboard");
       });
     }).catch((err) => {
       alert("ERROR!", err);
