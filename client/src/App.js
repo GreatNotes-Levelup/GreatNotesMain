@@ -9,7 +9,7 @@ import { UserContext } from "./components/UserContext.js";
 import { parseJwt } from "./utils.js";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./AppTheme.js";
-
+import Dashboard from "./routes/dashboard/index.js";
 
 export default function App() {
   let userFromStorage = window.localStorage.getItem('greatnotes-user');
@@ -42,6 +42,7 @@ export default function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/editor" element={<MarkdownEditor />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/dashboard" element={<Dashboard/>}/>
                 <Route path="*" element={<h1>404 Not found</h1>} />
               </Routes>
             </div>
