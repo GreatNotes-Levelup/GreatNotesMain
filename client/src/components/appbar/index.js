@@ -35,6 +35,11 @@ const AppBar = () => {
     setAnchorEl(null);
   };
 
+  // Not useful since the user is always logged in if they see the button, but nice to have
+  const getBestHomeLink = () => {
+    return user ? "/dashboard" : "/";
+  }
+
   return (
     <Box>
       <MAppBar position="static">
@@ -47,13 +52,13 @@ const AppBar = () => {
           {user &&
             <ul>
               <li>
-                <Link to="/">
-                  <Button >Home</Button>
+                <Link to={getBestHomeLink()}>
+                  <Button>Home</Button>
                 </Link>
               </li>
               <li>
                 <Link to="/editor">
-                  <Button >New Note</Button>
+                  <Button>New Note</Button>
                 </Link>
               </li>
               <li>

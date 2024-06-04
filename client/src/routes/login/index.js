@@ -32,7 +32,7 @@ const Login = () => {
       }
       res.json().then((data) => {
         setCurrentUser(data);
-        navigate("/");
+        navigate("/dashboard");
       });
     }).catch((err) => {
       alert("ERROR!", err);
