@@ -30,6 +30,9 @@ resource "aws_cognito_identity_provider" "google" {
     picture  = "picture"
   }
 
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "aws_cognito_user_pool_client" "api_client" {
