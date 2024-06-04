@@ -171,7 +171,7 @@ resource "aws_secretsmanager_secret_version" "private_key" {
   EOF
 
   lifecycle {
-    prevent_destroy = true
+    ignore_changes = all
   }
 }
 

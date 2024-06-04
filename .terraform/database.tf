@@ -71,6 +71,6 @@ resource "aws_secretsmanager_secret_version" "rds_credentials" {
   EOF
 
   lifecycle {
-    prevent_destroy = true
+    ignore_changes = all
   }
 }
