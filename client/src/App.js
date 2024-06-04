@@ -6,16 +6,16 @@ import Home from "./routes/home/index.js";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AppBar from "./components/appbar/index.js"; // Consider adding .js
 import { UserProvider } from "./components/UserContext.js";
-import { ThemeProvider } from "@mui/material";
+import { ThemeProvider, CssBaseline } from "@mui/material";
 import { theme } from "./AppTheme.js";
 import ProtectedRoute from "./routes/ProtectedRoute.js";
-
 import Dashboard from "./routes/dashboard/index.js";
 
 export default function App() {
     return (
       <UserProvider>
         <ThemeProvider theme={theme}>
+          <CssBaseline />
           <Router>
             <div className="app">
               <AppBar />
