@@ -267,7 +267,7 @@ resource "aws_elastic_beanstalk_environment" "great_notes_app_env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
-    value     = aws_security_group.ebs_allow_tcp.id
+    value     = "${aws_security_group.ebs_allow_tcp.id},${aws_security_group.allow_db.id}"
   }
 
   lifecycle {

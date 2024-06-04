@@ -20,7 +20,7 @@ resource "aws_security_group" "allow_ssh" {
   vpc_id      = aws_vpc.default_vpc.id
 
   ingress {
-    description = "Allow all SSH traffic"
+    description = "Allow all traffic"
     from_port   = "22"
     to_port     = "22"
     protocol    = "tcp"
@@ -28,11 +28,33 @@ resource "aws_security_group" "allow_ssh" {
   }
 
   egress {
-    description = "Allow all SSH traffic"
+    description = "Allow all traffic"
     from_port   = "22"
     to_port     = "22"
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "allow_db" {
+  name        = "allow_db"
+  description = "Allow traffic from the db"
+  vpc_id      = aws_vpc.default_vpc.id
+
+  ingress {
+    description     = "Allow all traffic"
+    from_port       = "0"
+    to_port         = "0"
+    protocol        = "-1"
+    security_groups = [aws_security_group.db_allow_tcp.id]
+  }
+
+  egress {
+    description     = "Allow all traffic"
+    from_port       = "0"
+    to_port         = "0"
+    protocol        = "-1"
+    security_groups = [aws_security_group.db_allow_tcp.id]
   }
 }
 
@@ -41,7 +63,7 @@ resource "aws_instance" "bastion_host" {
   ami                         = data.aws_ami.ubuntu_ami.id
   instance_type               = "t2.micro"
   key_name                    = module.key_pair.key_pair_name
-  security_groups             = [aws_security_group.allow_ssh.id]
+  security_groups             = [aws_security_group.allow_ssh.id, aws_security_group.allow_db.id]
   associate_public_ip_address = true
 
   subnet_id = aws_subnet.public_subnet[count.index].id
