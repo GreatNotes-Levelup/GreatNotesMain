@@ -68,18 +68,6 @@ variable "domain_name" {
   type        = string
 }
 
-variable "target_group_arn" {
-  description = "ARN of the target group"
-  type        = string
-  sensitive   = true
-}
-
-variable "load_balancer_arn" {
-  description = "ARN of the load balancer"
-  type        = string
-  sensitive   = true
-}
-
 variable "ebs_instance_id" {
   description = "ID of the ebs instance"
   type        = string
