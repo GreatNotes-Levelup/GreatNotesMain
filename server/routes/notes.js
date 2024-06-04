@@ -26,6 +26,32 @@ router.get('/all-notes', async (req, res) => {
   }
 });
 
+// Endpoint to get all notes for user
+router.get('/all-user-notes', async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
+
+  const user = getUserContext();
+
+  if (!user) {
+    throw new Error('User context is not set');
+  }
+
+  const { userId, username, email } = user;
+
+  if (!userId) {
+    return res.status(400).send("Not Logged In");
+  }
+
+  try {
+    const result = await pool.query('SELECT * FROM "Notes" WHERE owner_id = $1 ORDER BY "created_at" DESC LIMIT $2 OFFSET $3', [userId,limit, offset]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Endpoint to get notes shared with a user
 router.get('/shared-notes', async (req, res) => {
   const user = getUserContext();
