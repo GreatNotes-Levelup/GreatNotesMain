@@ -28,7 +28,17 @@ router.get('/all-notes', async (req, res) => {
 
 // Endpoint to get notes shared with a user
 router.get('/shared-notes', async (req, res) => {
-  const { userId } = req.query;
+  const user = getUserContext();
+
+  if (!user) {
+    throw new Error('User context is not set');
+  }
+
+  const { userId, username, email } = user;
+
+  if (!userId) {
+    return res.status(400).send("Not Logged In");
+  }
 
   try {
     const result = await pool.query(`
@@ -47,7 +57,17 @@ router.get('/shared-notes', async (req, res) => {
 // Endpoint to check if a user has access to a note
 router.get('/accessed-notes', async (req, res) => {
   const { id } = req.params;
-  const { userId } = req.query;
+  const user = getUserContext();
+
+  if (!user) {
+    throw new Error('User context is not set');
+  }
+
+  const { userId, username, email } = user;
+
+  if (!userId) {
+    return res.status(400).send("Not Logged In");
+  }
 
   try {
     const result = await pool.query('SELECT * FROM "NoteAccess" WHERE note_id = $1 AND user_id = $2', [id, userId]);
@@ -73,13 +93,25 @@ router.get('/notebyID', async (req, res) => {
 
 // Endpoint to create a note
 router.post('/create-note', async (req, res) => {
-  const { title, description, ownerId, content } = req.body;
+  const { title, description, content } = req.body;
+
+  const user = getUserContext();
+
+  if (!user) {
+    throw new Error('User context is not set');
+  }
+
+  const { userId, username, email } = user;
+
+  if (!userId) {
+    return res.status(400).send("Not Logged In");
+  }
 
   try {
     const result = await pool.query(`
       INSERT INTO "Notes" (title, description, owner_id, content, created_at, updated_at)
       VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING *
-    `, [title, description, ownerId, content]);
+    `, [title, description, userId, content]);
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err);
