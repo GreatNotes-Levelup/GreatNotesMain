@@ -35,3 +35,9 @@ resource "aws_lb_target_group" "http-target-group8080" {
     enable_unhealthy_connection_termination = true
   }
 }
+
+resource "aws_lb_target_group_attachment" "instance" {
+  target_group_arn = aws_lb_target_group.http-target-group8080.arn
+  target_id        = var.ebs_instance_id
+  port             = 8080
+}

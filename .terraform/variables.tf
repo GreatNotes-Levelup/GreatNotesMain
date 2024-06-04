@@ -79,3 +79,9 @@ variable "load_balancer_arn" {
   type        = string
   sensitive   = true
 }
+
+variable "ebs_instance_id" {
+  description = "ID of the ebs instance"
+  type        = string
+  sensitive   = true
+}
