@@ -9,11 +9,12 @@ resource "aws_lb_target_group" "http-target-group" {
 }
 
 resource "aws_lb_target_group" "http-target-group8080" {
-  name       = "http-target-group8080"
-  port       = 8080
-  protocol   = "TCP"
-  vpc_id     = aws_vpc.default_vpc.id
-  slow_start = 0
+  name                 = "http-target-group8080"
+  port                 = 8080
+  protocol             = "TCP"
+  vpc_id               = aws_vpc.default_vpc.id
+  slow_start           = 0
+  deregistration_delay = 20
 
   health_check {
     enabled             = true
