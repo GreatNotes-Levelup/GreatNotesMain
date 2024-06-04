@@ -10,6 +10,7 @@ import { ThemeProvider } from "@mui/material";
 import { theme } from "./AppTheme.js";
 import ProtectedRoute from "./routes/ProtectedRoute.js";
 
+import Dashboard from "./routes/dashboard/index.js";
 
 export default function App() {
     return (
@@ -24,6 +25,7 @@ export default function App() {
 
                 <Route element={<ProtectedRoute />}>
                   <Route path="/editor" element={<MarkdownEditor />} />
+                  <Route path="/dashboard" element={<Dashboard/>}/>
                 </Route>
                 <Route path="*" element={<h1>404 Not found</h1>} />
 
