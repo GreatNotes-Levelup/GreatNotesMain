@@ -11,7 +11,8 @@ import {DialogActions} from '@mui/material';
 import {DialogContent} from '@mui/material';
 import {DialogContentText} from '@mui/material';
 import {DialogTitle} from '@mui/material';
-import { getApiURL } from '../../utils.js';
+import { createNote } from '../../api/notes.js';
+
 
 const notes = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -44,7 +45,7 @@ const Dashboard = () => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let isValid = true;
     const newErrors = { title: '', description: '' };
 
@@ -61,17 +62,8 @@ const Dashboard = () => {
     setErrors(newErrors);
 
     if (isValid) {
-      try {
-        const response =  fetch(getApiURL()+'/api/notes/create-note', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({...formData, content:`# Start **writing** `}),
-        });
-      } catch (error) {
-        console.error('Error:', error);
-      }
+      const response = await createNote(formData);
+      console.table(response);
       navigate('/editor');
     }
   };
