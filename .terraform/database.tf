@@ -71,4 +71,8 @@ resource "aws_secretsmanager_secret_version" "rds_credentials" {
     "db_name"  : "${var.db_name}"
   }
   EOF
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
