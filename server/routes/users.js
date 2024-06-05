@@ -1,19 +1,12 @@
+import authMiddleware from "../middleware/authMiddleware.js";
 import pool from "../services/db_pool.cjs";
-import {verify} from "../services/jwt.js";
 import { getUserContext } from "../services/userContext.js";
 import { Router } from "express";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  // if (req.headers.authorization === null) {
-  //   res.status(403).json("No Token");
-  //   return;
-  // }
-  // if (!await verify(req.headers.authorization)) {
-  //   res.status(403).json("Unauthorized");
-  //   return;
-  // }
+router.get("/", authMiddleware, async (req, res) => {
+  console.log(res.locals.user);
   const client = await pool.connect();
   try {
     let rows = await client.query("SELECT * FROM public.\"Users\"");

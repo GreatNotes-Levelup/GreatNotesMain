@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { getUserContext } from "../services/userContext.js";
 import pool from "../services/db_pool.cjs";
 import bodyParser from 'body-parser';
+import authMiddleware from "../middleware/authMiddleware.js";
 
 dotenv.config();
 
@@ -13,22 +14,11 @@ const router = Router();
 router.use(bodyParser.json());
 
 // Endpoint to get all notes for user
-router.get('/all-user-notes', async (req, res) => {
-
-  const user = getUserContext();
-
-  if (!user) {
-    throw new Error('User context is not set');
-  }
-
-  const { userId, username, email } = user;
-
-  if (!userId) {
-    return res.status(400).send("Not Logged In");
-  }
+router.get('/all-user-notes', authMiddleware, async (req, res) => {
+  const user = res.locals.user;
 
   try {
-    const result = await pool.query('SELECT * FROM "Notes" WHERE owner_id = $1 ORDER BY "created_at" DESC', [userId]);
+    const result = await pool.query('SELECT * FROM "Notes" WHERE owner_id = $1 ORDER BY "created_at" DESC', [user.username]);
     res.json(result.rows);
   } catch (err) {
     console.error(err);

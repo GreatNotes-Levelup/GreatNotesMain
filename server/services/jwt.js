@@ -7,11 +7,7 @@ const verifier = CognitoJwtVerifier.create({
   clientId: process.env.AWS_CLIENT_ID,
 });
 
-export async function verify(auth_header) {
-  if (!auth_header.startsWith("Bearer")) {
-    return false;
-  }
-  let token = auth_header.split(" ")[1];
+export async function verify(token) {
   try {
     const payload = await verifier.verify(token);
     return payload;
