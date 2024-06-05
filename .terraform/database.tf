@@ -38,7 +38,8 @@ resource "random_password" "master_password" {
 }
 
 resource "aws_db_instance" "great_notes_db" {
-  identifier              = var.db_name
+  identifier              = var.instance_name
+  db_name                 = var.db_name
   username                = var.db_username
   password                = random_password.master_password.result
   allocated_storage       = 20
@@ -66,11 +67,8 @@ resource "aws_secretsmanager_secret_version" "rds_credentials" {
     "username" : "${var.db_username}",
     "password" : "${random_password.master_password.result}",
     "host"     : "${aws_db_instance.great_notes_db.endpoint}",
-    "port"     : "${aws_db_instance.great_notes_db.port}"
+    "port"     : "${aws_db_instance.great_notes_db.port}",
+    "db_name"  : "${var.db_name}"
   }
   EOF
-
-  lifecycle {
-    ignore_changes = all
-  }
 }

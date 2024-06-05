@@ -9,6 +9,11 @@ variable "db_name" {
   description = "The name of the database"
 }
 
+variable "instance_name" {
+  type        = string
+  description = "The name of the database instance"
+}
+
 variable "vpc_name" {
   type        = string
   description = "The name of the VPC"
