@@ -72,9 +72,3 @@ variable "domain_name" {
   description = "Domain name"
   type        = string
 }
-
-variable "ebs_instance_id" {
-  description = "ID of the ebs instance"
-  type        = string
-  sensitive   = true
-}
