@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './styles.css';
 import { IconButton } from '@mui/material';
 import { AddCircle, Edit } from '@mui/icons-material';
@@ -11,8 +10,8 @@ import {DialogActions} from '@mui/material';
 import {DialogContent} from '@mui/material';
 import {DialogContentText} from '@mui/material';
 import {DialogTitle} from '@mui/material';
+import { createNote,getNoteByUser, getSharedNoteByUser } from '../../api/notes.js';
 
-const notes = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -43,7 +42,7 @@ const Dashboard = () => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let isValid = true;
     const newErrors = { title: '', description: '' };
 
@@ -60,9 +59,26 @@ const Dashboard = () => {
     setErrors(newErrors);
 
     if (isValid) {
-      navigate('/editor');
+      const response = await createNote(formData);
+      
+      navigate('/editor', { state: { response } });
     }
   };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString(undefined, options);
+  };
+
+  
+  const [myNotes, setMyNotes] = useState([]);
+  const [sharedNotes, setSharedNotes] = useState([]);
+
+  useEffect(()=>{
+    getNoteByUser().then((notes)=>{setMyNotes(notes)});
+    getSharedNoteByUser().then((notes)=>{setSharedNotes(notes)});
+  },[])
   return (
     <main id="dashboard">
       <h1>My Notes</h1>
@@ -71,18 +87,20 @@ const Dashboard = () => {
         <AddCircle />
           <h3> New note</h3>
       </Button>
-        {notes.map((item) => {
+        {myNotes.map((item) => {
           return (
-            <div className="card" key={item}>
-              <h3>{`Note ${item}`}</h3>
+            <div 
+            onClick={()=>navigate('/editor', { state: {response: item} })}
+            className="card" key={item["note_id"]}>
+              <h3>{`${item.title}`}</h3>
               <p>
                 {
-                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+                  item.description
                 }
               </p>
               <div className="bottom">
-                <date>2024-05-30</date>
-                <IconButton color="primary" onClick={() => navigate('/editor')}>
+              <time datetime={`${formatDate(item.updated_at)}`}>{`${formatDate(item.updated_at)}`}</time>
+                <IconButton color="primary" onClick={() => navigate('/editor', { state: { item } })}>
                   <Edit />
                 </IconButton>
               </div>
@@ -92,19 +110,21 @@ const Dashboard = () => {
       </section>
 
       <h1>Shared with me</h1>
-      <section className="notes-section">
-        {notes.slice(2, 4).map((item) => {
+      {sharedNotes.length>0? <section className="notes-section">
+      {sharedNotes.map((item) => {
           return (
-            <div className="card" key={item}>
-              <h3>{`Note ${item}`}</h3>
+            <div 
+            onClick={()=>navigate('/editor', { state: {response: item} })}
+            className="card" key={item["note_id"]}>
+              <h3>{`${item.title}`}</h3>
               <p>
                 {
-                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+                  item.description
                 }
               </p>
               <div className="bottom">
-                <date>2024-05-30</date>
-                <IconButton>
+              <time datetime={`${formatDate(item.updated_at)}`}>{`${formatDate(item.updated_at)}`}</time>
+                <IconButton color="primary" onClick={() => navigate('/editor', { state: { item } })}>
                   <Edit />
                 </IconButton>
               </div>
@@ -112,6 +132,7 @@ const Dashboard = () => {
           );
         })}
       </section>
+      :<p>{"Nothing shared with you yet:)"}</p>}
 
       <Dialog
   open={open}

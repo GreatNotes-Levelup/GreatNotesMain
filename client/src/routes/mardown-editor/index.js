@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import { marked } from 'marked';
 import { Visibility, Save, Edit, Group } from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
+import { saveNote } from '../../api/notes.js';
 import {
   Divider,
   IconButton,
@@ -13,28 +15,18 @@ import {
   Select,
   Chip,
   MenuItem,
+  CircularProgress,
 } from '@mui/material';
 
-const defaultMarkdown = `# Write a great note
-## Unleash your creativity:
-- ~slowly~ Rapidly.
-- Effectively.
-- And **Securely**.
-`;
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 const MarkdownEditor = () => {
-  const [markdownText, setMarkdownText] = useState(defaultMarkdown);
+  const location = useLocation();
+  const { response } = location.state;
+
+  console.log(response);
+  const [markdownText, setMarkdownText] = useState(response.content);
   const [isPreview, setIsPreview] = useState(true);
+  const [isSaving, setIsSAving] = useState(false);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -72,33 +64,36 @@ const MarkdownEditor = () => {
     insertTextAtCursor('~~');
   };
 
+  const handleSave = async ()=>{
+    setIsSAving(true);
+    await saveNote(response["note_id"], response.title, response.description, markdownText)
+    setIsSAving(false);
+  }
+
   useEffect(() => {
     const checkScreenSize = () => {
       if (window.matchMedia('(min-width: 768px)').matches) {
         setIsPreview(false);
       }
     };
-
     checkScreenSize();
-
     const resizeListener = () => {
       checkScreenSize();
     };
-
     window.addEventListener('resize', resizeListener);
-
     return () => {
       window.removeEventListener('resize', resizeListener);
     };
   }, []);
+
   return (
     <main id="editor-page">
       <section className="editing-section">
         <div className="tool-bar">
           <div className="text-controls">
-            <IconButton style={{ color: 'black' }}>
+          {isSaving?<CircularProgress color='success' /> :<IconButton onClick={handleSave} style={{ color: 'black' }}>
               <Save />
-            </IconButton>
+            </IconButton>}
             <IconButton onClick={makeBold} style={{ color: 'black' }}>
               <strong>B</strong>
             </IconButton>
