@@ -19,7 +19,7 @@ export function parseJwt (token) {
 
 export async function getLoginURL() {
   let url =
-    'https://greatnotes-security-levelup.auth.eu-west-1.amazoncognito.com/login?response_type=code&';
+    `${COGNITO_DOMAIN}/login?response_type=code&`;
   url +=
     'redirect_uri=' +
     (process.env.ENV === 'development'

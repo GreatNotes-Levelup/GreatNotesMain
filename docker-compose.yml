@@ -22,6 +22,7 @@ services:
       - AWS_CLIENT_ID=
       - AWS_CLIENT_SECRET=
       - AWS_USER_POOL_ID=
+      - COGNITO_DOMAIN=
       - DB_NAME=testdb
       - DB_USER=dbuser
       - DB_HOST=db
