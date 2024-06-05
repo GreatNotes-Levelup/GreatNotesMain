@@ -16,14 +16,18 @@ import {
   Chip,
   MenuItem,
   CircularProgress,
+  useTheme
 } from '@mui/material';
+import useAuth from '../../components/UserContext.js';
 
 
 const MarkdownEditor = () => {
   const location = useLocation();
   const { response } = location.state;
+  const theme = useTheme();
+  console.log(theme);
 
-  console.log(response);
+  const { user } = useAuth();
   const [markdownText, setMarkdownText] = useState(response.content);
   const [isPreview, setIsPreview] = useState(true);
   const [isSaving, setIsSAving] = useState(false);
@@ -66,7 +70,7 @@ const MarkdownEditor = () => {
 
   const handleSave = async ()=>{
     setIsSAving(true);
-    await saveNote(response["note_id"], response.title, response.description, markdownText)
+    await saveNote(user, response["note_id"], response.title, response.description, markdownText)
     setIsSAving(false);
   }
 
@@ -91,24 +95,24 @@ const MarkdownEditor = () => {
       <section className="editing-section">
         <div className="tool-bar">
           <div className="text-controls">
-          {isSaving?<CircularProgress color='success' /> :<IconButton onClick={handleSave} style={{ color: 'black' }}>
+          {isSaving?<CircularProgress color='success' /> :<IconButton onClick={handleSave} sx={{color: theme.palette.primary.main}}>
               <Save />
             </IconButton>}
-            <IconButton onClick={makeBold} style={{ color: 'black' }}>
+            <IconButton onClick={makeBold} >
               <strong>B</strong>
             </IconButton>
-            <IconButton onClick={makeItalic} style={{ color: 'black' }}>
+            <IconButton onClick={makeItalic} >
               <em>I</em>
             </IconButton>
-            <IconButton onClick={makeUnderline} style={{ color: 'black' }}>
+            <IconButton onClick={makeUnderline} >
               <u>U</u>
             </IconButton>
-            <IconButton onClick={makeStrikethrough} style={{ color: 'black' }}>
+            <IconButton onClick={makeStrikethrough} >
               <s>S</s>
             </IconButton>
             <IconButton
               onClick={() => setIsPreview(!isPreview)}
-              style={{ color: 'black' }}
+              
               className="preview-button"
             >
               {isPreview ? <Edit /> : <Visibility />}
@@ -119,7 +123,7 @@ const MarkdownEditor = () => {
           </Button>
         </div>
 
-        <Divider style={{ backgroundColor: 'lightgray' }} />
+        <Divider style={{ backgroundColor: 'slategray' }} />
         {isPreview ? (
           <article
             className="markdown-body"

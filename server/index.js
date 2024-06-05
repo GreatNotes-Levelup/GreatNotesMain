@@ -10,7 +10,6 @@ import { configDotenv } from 'dotenv';
 configDotenv();
 const app = express();
 
-
 app.use(express.json());
 //Print node env
 console.log(`Node environment: ${process.env.NODE_ENV}`);
@@ -25,7 +24,6 @@ app.use(cors({
 
 app.use('/api/notes', notes);
 app.use('/api/auth', auth);
-app.use('/api/users', users);
 
 app.use(express.static('dist'));
 const __dirname = path.resolve(path.dirname(''));

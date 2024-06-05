@@ -1,6 +1,6 @@
 import { Router } from "express";
-import jwt from 'jsonwebtoken';
-import { setUserContext } from "../services/userContext.js";
+import { createUser } from "../services/createUser.js";
+
 
 const router = Router();
 
@@ -28,21 +28,15 @@ router.get('/', (req, res) => {
   };
 
   fetch("https://greatnotes-security-levelup.auth.eu-west-1.amazoncognito.com/oauth2/token?" + new URLSearchParams(params), options).then((oauth_res) => {
-    console.log(oauth_res);
     if(oauth_res.ok) {
       oauth_res.json().then((data) => {
-        const token = data.id_token;
-
-        const decodedToken = jwt.decode(token, { complete: true });
-
-        const username = decodedToken.payload['cognito:username'];
-        const email=decodedToken.payload['email'];
-        const userId = decodedToken.payload.identities[0].userId;
-
-        setUserContext({ userId, username, email});
-
+        try {
+          createUser(data.id_token);
+       } catch (error) {
+         console.error(error);
+         res.status(500).json("Error creating user");
+       }
         res.json(data);
-
       })
       .catch(() => {
         res.status(500).json("Authentication succeeded but getting the json data failed");
@@ -53,7 +47,7 @@ router.get('/', (req, res) => {
 
   })
   .catch((err) => {
-    console.log(err);
+    console.error(err);
     res.status(500).json("Auth failed!");
   })
 

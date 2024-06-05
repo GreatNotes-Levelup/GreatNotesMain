@@ -1,7 +1,8 @@
 #editor-page {
   display: flex;
   height: 90.73%;
-  background-color: white;
+  background-color: #131313;
+  color: white;
 }
 
 #editor-page section,
@@ -60,6 +61,13 @@
   padding: 2rem;
   box-sizing: border-box;
   resize: none;
+  background-color: #131313;
+  color: white;
+}
+
+#editor-page textarea:focus-visible {
+  border: none;
+  outline: none;
 }
 
 #editor-page .markdown-body {
@@ -69,6 +77,14 @@
   margin: 0 auto;
   padding: 45px;
   overflow-y: scroll;
+  background-color: #131313;
+  color: white;
+
+}
+
+#editor-page .markdown-body pre {
+  background-color: #1E1E1E;
+
 }
 
 @media (max-width: 767px) {

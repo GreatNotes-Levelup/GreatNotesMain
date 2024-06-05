@@ -11,10 +11,12 @@ import {DialogContent} from '@mui/material';
 import {DialogContentText} from '@mui/material';
 import {DialogTitle} from '@mui/material';
 import { createNote,getNoteByUser, getSharedNoteByUser } from '../../api/notes.js';
+import useAuth from '../../components/UserContext.js';
 
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
@@ -59,7 +61,7 @@ const Dashboard = () => {
     setErrors(newErrors);
 
     if (isValid) {
-      const response = await createNote(formData);
+      const response = await createNote(user, formData);
       
       navigate('/editor', { state: { response } });
     }
@@ -76,8 +78,8 @@ const Dashboard = () => {
   const [sharedNotes, setSharedNotes] = useState([]);
 
   useEffect(()=>{
-    getNoteByUser().then((notes)=>{setMyNotes(notes)});
-    getSharedNoteByUser().then((notes)=>{setSharedNotes(notes)});
+    getNoteByUser(user).then((notes)=>{setMyNotes(notes)});
+    getSharedNoteByUser(user).then((notes)=>{setSharedNotes(notes)});
   },[])
   return (
     <main id="dashboard">
