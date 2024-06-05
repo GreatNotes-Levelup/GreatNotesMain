@@ -13,12 +13,12 @@ const port = process.env.PORT ?? 8080;
 
 app.use(express.json());
 //Print node env
-console.log(`Node environment: ${process.env.NODE_ENV}`);
+console.log(`Node environment: ${process.env.ENV}`);
 
 app.use(cors({
   origin: process.env.NODE_ENV === 'development'
-  ? 'http://localhost:3000'
-  : 'https://great-notes.projects.bbdgrad.com', 
+  ? `http://localhost:${process.env.ENV}`
+  : `${process.env.DOMAIN}`, 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'] 
 }));

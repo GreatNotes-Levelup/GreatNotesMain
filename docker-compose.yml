@@ -25,7 +25,7 @@ services:
       - DB_NAME=testdb
       - DB_USER=dbuser
       - DB_HOST=db
-      - DB_PASWORD=test
+      - DB_PASSWORD=test
       - DB_PORT=5432
       - PORT=3000
       - ENV=development
