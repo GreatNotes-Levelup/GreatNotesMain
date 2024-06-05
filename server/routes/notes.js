@@ -51,19 +51,6 @@ router.get('/accessed-notes', authMiddleware, async (req, res) => {
   }
 });
 
-// Endpoint to get a note by its id
-router.get('/notebyID', async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const result = await pool.query('SELECT * FROM "Notes" WHERE note_id = $1', [id]);
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
 // Endpoint to create a note
 router.post('/create-note', authMiddleware, async (req, res) => {
   const { title, description, content } = req.body;
