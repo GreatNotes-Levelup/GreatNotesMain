@@ -3,6 +3,7 @@ import notes from './routes/notes.js';
 import auth from './routes/auth.js';
 import users from './routes/users.js';
 import cors from 'cors';
+import path from 'path';
 
 import { configDotenv } from 'dotenv';
 
@@ -29,10 +30,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static('dist'));
 app.use('/api/notes', notes);
 app.use('/api/auth', auth);
 app.use('/api/users', users);
+
+app.use(express.static('dist'));
+const __dirname = path.resolve(path.dirname(''));
+app.get('/*', (req, res) => {
+  res.sendFile(__dirname + '/dist/index.html');
+});
 
 const port = process.env.PORT || 8080;
 

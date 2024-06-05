@@ -39,3 +39,35 @@ export function parseJwt (token) {
 
   return JSON.parse(jsonPayload);
 }
+
+export async function getLoginURL() {
+  let url =
+    'https://greatnotes-security-levelup.auth.eu-west-1.amazoncognito.com/login?response_type=code&';
+  url +=
+    'redirect_uri=' +
+    (process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : 'https://great-notes.projects.bbdgrad.com') +
+    '/login';
+  let getClientIdUrl = getApiURL() + '/api/auth/client_id';
+  console.log('getClientIdUrl', getClientIdUrl);
+  url = await fetch(getClientIdUrl)
+    .then(async (res) => {
+      if (!res.ok) {
+        res.json().then((data) => {
+          alert(data);
+        });
+        return;
+      } else {
+        return await res.json().then(async (data) => {
+          url += '&client_id=' + data;
+          return url;
+        });
+      }
+    })
+    .catch((err) => {
+      alert('API down!', err);
+      return;
+    });
+  return url;
+}
