@@ -6,29 +6,6 @@ export const getApiURL = () => {
   }
 }
 
-/* Deprecated: id_token does contain the data I expect now */
-/*
-export const getUserInfo = async (token) => {
-  let options = {
-    headers : {
-      "Authorization": "Bearer " + token
-    }
-  }
-  return await fetch('https://greatnotes-security-levelup.auth.eu-west-1.amazoncognito.com/oauth2/userInfo', options).then(async (res) => {
-    if(res.ok) {
-      return await res.json().then(async (data) => {
-        console.log(data);
-        return data;
-      })
-    } else {
-      console.log(res);
-    }
-  }).catch((err) => {
-    console.err("oooops", err);
-  });
-}
-*/
-
 // https://stackoverflow.com/a/38552302
 export function parseJwt (token) {
   var base64Url = token.split('.')[1];
@@ -50,7 +27,6 @@ export async function getLoginURL() {
       : 'https://great-notes.projects.bbdgrad.com') +
     '/login';
   let getClientIdUrl = getApiURL() + '/api/auth/client_id';
-  console.log('getClientIdUrl', getClientIdUrl);
   url = await fetch(getClientIdUrl)
     .then(async (res) => {
       if (!res.ok) {

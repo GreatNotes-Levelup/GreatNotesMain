@@ -9,7 +9,6 @@ export async function createUser(token) {
   const email=decodedToken.payload['email'];
   const username = decodedToken.payload['name'];;
 
-  console.log('user_id',user_id);
   const client = await pool.connect();
   try {
     const userCheck = await client.query(

@@ -24,7 +24,6 @@ app.use(cors({
 
 app.use('/api/notes', notes);
 app.use('/api/auth', auth);
-app.use('/api/users', users);
 
 app.use(express.static('dist'));
 const __dirname = path.resolve(path.dirname(''));

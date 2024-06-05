@@ -5,7 +5,6 @@ import { Router } from "express";
 const router = Router();
 
 router.get("/", authMiddleware, async (req, res) => {
-  console.log(res.locals.user);
   const client = await pool.connect();
   try {
     let rows = await client.query("SELECT * FROM public.\"Users\"");

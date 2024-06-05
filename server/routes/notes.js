@@ -12,7 +12,6 @@ router.use(bodyParser.json());
 // Endpoint to get all notes for user
 router.get('/all-user-notes', authMiddleware, async (req, res) => {
   const user = res.locals.user;
-  console.log('USERNAME',user.username);
   try {
     const result = await pool.query('SELECT * FROM "Notes" WHERE owner_id = $1 ORDER BY "created_at" DESC', [user.username]);
     res.json(result.rows);

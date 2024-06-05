@@ -28,11 +28,9 @@ router.get('/', (req, res) => {
   };
 
   fetch("https://greatnotes-security-levelup.auth.eu-west-1.amazoncognito.com/oauth2/token?" + new URLSearchParams(params), options).then((oauth_res) => {
-    console.log(oauth_res);
     if(oauth_res.ok) {
       oauth_res.json().then((data) => {
         try {
-          console.log('data',data);
           createUser(data.id_token);
        } catch (error) {
          console.error(error);
@@ -49,7 +47,7 @@ router.get('/', (req, res) => {
 
   })
   .catch((err) => {
-    console.log(err);
+    console.error(err);
     res.status(500).json("Auth failed!");
   })
 
