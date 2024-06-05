@@ -47,8 +47,6 @@ jobs:
           ssh-keyscan -H ${{ secrets.BASTION_HOST }} >> ~/.ssh/known_hosts
           eval `ssh-agent -s`
           ssh -fN -v -L 5432:${{ env.CREDENTIALS_HOST }} ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} -i ssh_key.pem &
-          PID=$!
-          echo "SSH_PID=$(echo $PID)" >> $GITHUB_ENV
 
       - name: Generate flyway config file
         run: |
@@ -63,6 +61,3 @@ jobs:
         run: |
           sudo snap install flyway
           flyway migrate -configFiles=flyway.generated.conf
-
-      - name: Terminate SSH tunnel
-        run: kill -9 $SSH_PID
