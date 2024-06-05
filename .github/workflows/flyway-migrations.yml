@@ -1,16 +1,17 @@
 name: Database Migration with Flyway
 
 on:
-  # TODO: uncomment these when we have the secrets in the repo
-  # push:
-  #   branches: 
-  #     - "main"
-  #     - "arinaho/feature/database-migrations"
-  #   paths:
-  #     - 'database/scripts/**'
-  #     - 'database/flyway/**'
+  push:
+    branches: [sphe/feat/rds-connection-fix]
+    paths:
+      - 'database/scripts/**'
+      - 'database/flyway/**'
 
   workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   migrate-database:
@@ -18,17 +19,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Generate flyway config file
-      run: |
-        echo "flyway.url=${{ secrets.DB_URL }}" >> flyway.generated.conf
-        echo "flyway.user=${{ secrets.DB_USER }}" >> flyway.generated.conf
-        echo "flyway.password=${{ secrets.DB_USER_PASSWORD }}" >> flyway.generated.conf
-        cat database/flyway/flyway.conf >> flyway.generated.conf
+      - name: Assume the deploy pipeline user role
+        uses: aws-actions/configure-aws-credentials@v4.0.1
+        with:
+          role-to-assume: ${{ secrets.ASSUME_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Run Flyway Migration
-      run: |
-        sudo snap install flyway
-        flyway migrate -configFiles=flyway.generated.conf
+      - name: Get private key secret
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            private_key
+            credentials
+          parse-json-secrets: true
+
+      - name: Store ssh key in pem file
+        run: echo ${{ env.PRIVATE_KEY_PRIVATE_KEY_RFC1421 }} > ssh_key.pem
+      
+      - name: Configure ssh tunnel through bastion host
+        run: |
+          ssh -fN -v -L 5432:${{ env.CREDENTIALS_HOST }} ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} -i ssh_key.pem &
+          PID=$!
+          echo "SSH_PID=$(echo $PID)" >> $GITHUB_ENV
+
+      - name: Generate flyway config file
+        run: |
+          cat > flyway.generated.conf <<EOF
+          flyway.url=jdbc:postgresql://localhost:5432/${{ env.CREDENTIALS_DB_NAME }}
+          flyway.user=${{ env.CREDENTIALS_USERNAME }}
+          flyway.password=${{ env.CREDENTIALS_PASSWORD }}
+          EOF
+          cat database/flyway/flyway.conf >> flyway.generated.conf
+
+      - name: Run Flyway Migration
+        run: |
+          sudo snap install flyway
+          flyway migrate -configFiles=flyway.generated.conf
+      
+      - name: Terminate SSH tunnel
+        run: kill -9 $SSH_PID
