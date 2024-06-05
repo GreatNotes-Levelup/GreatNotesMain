@@ -1,5 +1,6 @@
 import { Router } from "express";
-import jwt from 'jsonwebtoken';
+import { createUser } from "../services/createUser.js";
+
 
 const router = Router();
 
@@ -30,6 +31,13 @@ router.get('/', (req, res) => {
     console.log(oauth_res);
     if(oauth_res.ok) {
       oauth_res.json().then((data) => {
+        try {
+          console.log('data',data);
+          createUser(data.id_token);
+       } catch (error) {
+         console.error(error);
+         res.status(500).json("Error creating user");
+       }
         res.json(data);
       })
       .catch(() => {

@@ -1,12 +1,20 @@
 import pool from "../services/db_pool.cjs";
+import jwt from 'jsonwebtoken';
 
-export async function createUser(req, res) {
-  
+export async function createUser(token) {
+
+  const decodedToken = jwt.decode(token, { complete: true });
+
+  const user_id = decodedToken.payload['cognito:username'];
+  const email=decodedToken.payload['email'];
+  const username = decodedToken.payload['name'];;
+
+  console.log('user_id',user_id);
   const client = await pool.connect();
   try {
     const userCheck = await client.query(
       'SELECT * FROM public."Users" WHERE user_id = $1',
-      [username]
+      [user_id]
     );
 
     if (userCheck.rows.length > 0) {
@@ -15,7 +23,7 @@ export async function createUser(req, res) {
     else{
        await client.query(
       'INSERT INTO public."Users" (user_id, username, email, created_at) VALUES ($1, $2, $3, NOW()) RETURNING *',
-      [userId, username, email]
+      [user_id, username, email]
       );
     }
   } catch (err) {
