@@ -10,7 +10,7 @@ const router = Router();
 router.use(bodyParser.json());
 
 // Endpoint to get all notes for user
-router.get('/all-user-notes', authMiddleware, async (req, res) => {
+router.get('/all-user-notes', async (req, res) => {
   const user = res.locals.user;
   try {
     const result = await pool.query('SELECT * FROM "Notes" WHERE owner_id = $1 ORDER BY "created_at" DESC', [user.username]);
@@ -22,7 +22,7 @@ router.get('/all-user-notes', authMiddleware, async (req, res) => {
 });
 
 // Endpoint to get notes shared with a user
-router.get('/shared-notes', authMiddleware, async (req, res) => {
+router.get('/shared-notes', async (req, res) => {
   const user = res.locals.user;
   try {
     const result = await pool.query(`
@@ -39,7 +39,7 @@ router.get('/shared-notes', authMiddleware, async (req, res) => {
 });
 
 // Endpoint to check if a user has access to a note
-router.get('/accessed-notes', authMiddleware, async (req, res) => {
+router.get('/accessed-notes', async (req, res) => {
   const { id } = req.params;
   const user = res.locals.user;
   try {
@@ -52,7 +52,7 @@ router.get('/accessed-notes', authMiddleware, async (req, res) => {
 });
 
 // Endpoint to create a note
-router.post('/create-note', authMiddleware, async (req, res) => {
+router.post('/create-note', async (req, res) => {
   const { title, description, content } = req.body;
   const user = res.locals.user;
   try {
