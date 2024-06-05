@@ -42,7 +42,7 @@ jobs:
           cat > ./server/.env <<EOF
           DB_USER=${{ env.CREDENTIALS_USERNAME }}
           DB_HOST=${{ env.CREDENTIALS_HOST }}
-          DB_NAME=${{ secrets.DB_NAME }}
+          DB_NAME=${{ env.CREDENTIALS_DB_NAME }}
           DB_PORT=${{ env.CREDENTIALS_PORT }}
           DB_PASSWORD=${{ env.CREDENTIALS_PASSWORD }}
           AWS_CLIENT_ID=${{ secrets.AWS_CLIENT_ID}}
