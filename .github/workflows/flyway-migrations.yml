@@ -37,12 +37,16 @@ jobs:
             credentials
           parse-json-secrets: true
 
-      - name: Store ssh key in pem file
-        run: echo ${{ env.PRIVATE_KEY_PRIVATE_KEY_RFC1421 }} > ssh_key.pem
+      # - name: Store ssh key in pem file
+      #   run: echo ${{ env.PRIVATE_KEY_PRIVATE_KEY_RFC1421 }} > ssh_key.pem
       
       - name: Configure ssh tunnel through bastion host
         run: |
-          ssh -fN -v -L 5432:${{ env.CREDENTIALS_HOST }} ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} -i ssh_key.pem &
+          mkdir ~/.ssh
+          ssh-keyscan -H ${{ secrets.BASTION_HOST }} >> ~/.ssh/known_hosts
+          eval `ssh-agent -s`
+          ssh-add - <<< "${{ env.PRIVATE_KEY_PRIVATE_KEY_RFC1421 }}"
+          ssh -fN -v -L 5432:${{ env.CREDENTIALS_HOST }} ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} &
           PID=$!
           echo "SSH_PID=$(echo $PID)" >> $GITHUB_ENV
 
