@@ -1,9 +1,5 @@
 import { Router } from "express";
-import s3Client from "../awsClient.js";
-import { GetObjectCommand, PutObjectCommand, ListObjectsV2Command, HeadObjectCommand } from '@aws-sdk/client-s3';
-import multer from "multer";
 import dotenv from 'dotenv';
-import { getUserContext } from "../services/userContext.js";
 import pool from "../services/db_pool.cjs";
 import bodyParser from 'body-parser';
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -16,7 +12,7 @@ router.use(bodyParser.json());
 // Endpoint to get all notes for user
 router.get('/all-user-notes', authMiddleware, async (req, res) => {
   const user = res.locals.user;
-
+  console.log('USERNAME',user.username);
   try {
     const result = await pool.query('SELECT * FROM "Notes" WHERE owner_id = $1 ORDER BY "created_at" DESC', [user.username]);
     res.json(result.rows);
@@ -27,26 +23,15 @@ router.get('/all-user-notes', authMiddleware, async (req, res) => {
 });
 
 // Endpoint to get notes shared with a user
-router.get('/shared-notes', async (req, res) => {
-  const user = getUserContext();
-
-  if (!user) {
-    throw new Error('User context is not set');
-  }
-
-  const { userId, username, email } = user;
-
-  if (!userId) {
-    return res.status(400).send("Not Logged In");
-  }
-
+router.get('/shared-notes', authMiddleware, async (req, res) => {
+  const user = res.locals.user;
   try {
     const result = await pool.query(`
       SELECT n.*
       FROM "Notes" n
       JOIN "NoteAccess" na ON n.note_id = na.note_id
       WHERE na.user_id = $1
-    `, [userId]);
+    `, [user.username]);
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -55,22 +40,11 @@ router.get('/shared-notes', async (req, res) => {
 });
 
 // Endpoint to check if a user has access to a note
-router.get('/accessed-notes', async (req, res) => {
+router.get('/accessed-notes', authMiddleware, async (req, res) => {
   const { id } = req.params;
-  const user = getUserContext();
-
-  if (!user) {
-    throw new Error('User context is not set');
-  }
-
-  const { userId, username, email } = user;
-
-  if (!userId) {
-    return res.status(400).send("Not Logged In");
-  }
-
+  const user = res.locals.user;
   try {
-    const result = await pool.query('SELECT * FROM "NoteAccess" WHERE note_id = $1 AND user_id = $2', [id, userId]);
+    const result = await pool.query('SELECT * FROM "NoteAccess" WHERE note_id = $1 AND user_id = $2', [id, user.username]);
     res.json(result.rowCount > 0);
   } catch (err) {
     console.error(err);
@@ -92,26 +66,14 @@ router.get('/notebyID', async (req, res) => {
 });
 
 // Endpoint to create a note
-router.post('/create-note', async (req, res) => {
+router.post('/create-note', authMiddleware, async (req, res) => {
   const { title, description, content } = req.body;
-
-  const user = getUserContext();
-
-  if (!user) {
-    throw new Error('User context is not set');
-  }
-
-  const { userId, username, email } = user;
-
-  if (!userId) {
-    return res.status(400).send("Not Logged In");
-  }
-
+  const user = res.locals.user;
   try {
     const result = await pool.query(`
       INSERT INTO "Notes" (title, description, owner_id, content, created_at, updated_at)
       VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING *
-    `, [title, description, userId, content]);
+    `, [title, description, user.username, content]);
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err);
@@ -178,4 +140,26 @@ router.delete('/delete-note', async (req, res) => {
   }
 });
 
+// Endpoint to get emails that have access to note
+router.get('/email-with-access', async (req, res) => {
+  const { noteId } = req.params;
+
+  try {
+    const result = await pool.query(
+      `
+      SELECT u.email
+      FROM "NoteAccess" na
+      JOIN "Users" u ON na.user_id = u.user_id
+      WHERE na.note_id = $1
+      `,
+      [noteId]
+    );
+
+    const emails = result.rows.map(row => row.email);
+    res.json({ emails });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
 export default router;

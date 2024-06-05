@@ -10,7 +10,6 @@ import { configDotenv } from 'dotenv';
 configDotenv();
 const app = express();
 
-
 app.use(express.json());
 //Print node env
 console.log(`Node environment: ${process.env.NODE_ENV}`);
