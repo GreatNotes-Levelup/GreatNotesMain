@@ -3,7 +3,7 @@ name: Database Migration with Flyway
 on:
   push:
     branches:
-      - sphe/feat/rds-connection-fix
+      - main
     paths:
       - 'database/scripts/**'
       - 'database/flyway/**'
