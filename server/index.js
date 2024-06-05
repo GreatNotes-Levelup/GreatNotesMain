@@ -2,6 +2,7 @@ import express from 'express';
 import notes from './routes/notes.js';
 import auth from './routes/auth.js';
 import users from './routes/users.js';
+import cors from 'cors';
 import path from 'path';
 
 import { configDotenv } from 'dotenv';
@@ -14,15 +15,13 @@ app.use(express.json());
 //Print node env
 console.log(`Node environment: ${process.env.NODE_ENV}`);
 
-app.use((req, res, next) => {
-  res.setHeader(
-    'Access-Control-Allow-Origin',
-    process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000'
-      : 'https://great-notes.projects.bbdgrad.com'
-  );
-  next();
-});
+app.use(cors({
+  origin: process.env.NODE_ENV === 'development'
+  ? 'http://localhost:3000'
+  : 'https://great-notes.projects.bbdgrad.com', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'] 
+}));
 
 app.use('/api/notes', notes);
 app.use('/api/auth', auth);
