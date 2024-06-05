@@ -10,15 +10,10 @@ import { configDotenv } from 'dotenv';
 configDotenv();
 const app = express();
 
-app.use(cors({
-  origin: 'http://localhost:3000', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'] 
-}));
 
 app.use(express.json());
-
-console.log(process.env.NODE_ENV);
+//Print node env
+console.log(`Node environment: ${process.env.NODE_ENV}`);
 
 app.use((req, res, next) => {
   res.setHeader(

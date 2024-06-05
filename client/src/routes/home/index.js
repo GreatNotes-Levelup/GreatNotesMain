@@ -1,17 +1,8 @@
 import './styles.css';
-import { useNavigate } from 'react-router-dom';
-import React, { useContext, useEffect  } from 'react';
-import { UserContext } from '../../components/UserContext.js';
+import React from 'react';
+
 
 const Home = () => {
-  const { currentUser, _, removeCurrentUser } = useContext(UserContext);
-  const navigate = useNavigate();
-  useEffect(()=>{
-    if(currentUser){
-      navigate('/dashboard');
-    }
-    return;
-  },[]);
 
   return (
     <main id="home-page">
