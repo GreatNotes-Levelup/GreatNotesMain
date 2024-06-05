@@ -17,7 +17,7 @@ console.log(`Node environment: ${process.env.ENV}`);
 
 app.use(cors({
   origin: process.env.NODE_ENV === 'development'
-  ? `http://localhost:${process.env.ENV}`
+  ? `http://localhost:${process.env.PORT}`
   : `${process.env.DOMAIN}`, 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'] 
