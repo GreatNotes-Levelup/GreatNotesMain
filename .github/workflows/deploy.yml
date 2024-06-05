@@ -48,6 +48,9 @@ jobs:
           AWS_CLIENT_ID=${{ secrets.AWS_CLIENT_ID}}
           AWS_CLIENT_SECRET=${{ secrets.AWS_CLIENT_SECRET }}
           AWS_USER_POOL_ID=${{ secrets.AWS_USER_POOL_ID }}
+          ENV=production
+          PORT=8081
+          DOMAIN=https://great-notes.projects.bbdgrad.com/
           EOF
       
       - name: Node setup
