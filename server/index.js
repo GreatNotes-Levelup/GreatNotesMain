@@ -1,11 +1,11 @@
 import express from 'express';
 import notes from './routes/notes.js';
 import auth from './routes/auth.js';
-import users from './routes/users.js';
 import cors from 'cors';
 import path from 'path';
 
 import { configDotenv } from 'dotenv';
+import authMiddleware from './middleware/authMiddleware.js';
 
 configDotenv();
 const app = express();
@@ -22,7 +22,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'] 
 }));
 
-app.use('/api/notes', notes);
+app.use('/api/notes', authMiddleware, notes);
 app.use('/api/auth', auth);
 
 app.use(express.static('dist'));
