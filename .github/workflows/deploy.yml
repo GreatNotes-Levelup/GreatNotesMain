@@ -50,7 +50,7 @@ jobs:
           AWS_USER_POOL_ID=${{ secrets.AWS_USER_POOL_ID }}
           ENV=production
           PORT=8081
-          DOMAIN=https://great-notes.projects.bbdgrad.com/
+          DOMAIN=https://great-notes.projects.bbdgrad.com
           EOF
       
       - name: Node setup
