@@ -1,7 +1,5 @@
 FROM node:21-alpine AS builder
 
-RUN apk update && apk add git
-
 WORKDIR /build-stage
 COPY . ./
 

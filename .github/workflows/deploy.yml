@@ -48,6 +48,10 @@ jobs:
           AWS_CLIENT_ID=${{ secrets.AWS_CLIENT_ID}}
           AWS_CLIENT_SECRET=${{ secrets.AWS_CLIENT_SECRET }}
           AWS_USER_POOL_ID=${{ secrets.AWS_USER_POOL_ID }}
+          ENV=production
+          PORT=8081
+          DOMAIN=https://great-notes.projects.bbdgrad.com
+          COGNITO_DOMAIN=https://greatnotes-security-levelup.auth.eu-west-1.amazoncognito.com
           EOF
       
       - name: Node setup
