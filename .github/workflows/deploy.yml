@@ -51,6 +51,7 @@ jobs:
           ENV=production
           PORT=8081
           DOMAIN=https://great-notes.projects.bbdgrad.com
+          COGNITO_DOMAIN=https://greatnotes-security-levelup.auth.eu-west-1.amazoncognito.com
           EOF
       
       - name: Node setup

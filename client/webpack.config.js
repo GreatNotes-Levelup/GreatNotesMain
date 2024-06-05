@@ -25,7 +25,9 @@ export default (_env, argv) => {
       }),
       new webpack.EnvironmentPlugin({
         ENV: process.env.ENV, 
-        PORT: process.env.PORT
+        PORT: process.env.PORT,
+        DOMAIN: process.env.DOMAIN,
+        COGNITO_DOMAIN: process.env.COGNITO_DOMAIN
       })
     ].concat(devMode ? [] : [new MiniCssExtractPlugin()]),
 
