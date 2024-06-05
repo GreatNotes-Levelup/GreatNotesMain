@@ -28,6 +28,14 @@ html {
   flex: 1;
 }
 
+body{
+  width: 100% !important;
+  height: 100% !important;
+  background-color: unset !important;
+  display: unset !important;
+  position: unset !important;
+}
+
 .app-bar {
   display: flex;
   justify-content: space-between;
