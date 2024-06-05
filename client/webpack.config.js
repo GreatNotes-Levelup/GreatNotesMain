@@ -2,7 +2,10 @@ import path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import { fileURLToPath } from "url";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import webpack from "webpack";
+import dotenv from 'dotenv';
 
+dotenv.config({ path: '../server/.env' }); 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default (_env, argv) => {
@@ -20,6 +23,10 @@ export default (_env, argv) => {
       new HtmlWebpackPlugin({
         template: "./src/index.html",
       }),
+      new webpack.EnvironmentPlugin({
+        ENV: process.env.ENV, 
+        PORT: process.env.PORT
+      })
     ].concat(devMode ? [] : [new MiniCssExtractPlugin()]),
 
     module: {

@@ -1,8 +1,8 @@
 export const getApiURL = () => {
-  if (process.env.NODE_ENV === "development") {
-    return "http://localhost:8080";
+  if (process.env.ENV === "development") {
+    return `http://localhost:${process.env.PORT ?? 8080}`;
   } else {
-    return "https://great-notes.projects.bbdgrad.com"
+    return process.env.DOMAIN
   }
 }
 
@@ -22,9 +22,9 @@ export async function getLoginURL() {
     'https://greatnotes-security-levelup.auth.eu-west-1.amazoncognito.com/login?response_type=code&';
   url +=
     'redirect_uri=' +
-    (process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000'
-      : 'https://great-notes.projects.bbdgrad.com') +
+    (process.env.ENV === 'development'
+      ? `http://localhost:${process.env.PORT ?? 8080}`
+      : process.env.DOMAIN) +
     '/login';
   let getClientIdUrl = getApiURL() + '/api/auth/client_id';
   url = await fetch(getClientIdUrl)
