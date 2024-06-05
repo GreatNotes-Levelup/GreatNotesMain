@@ -46,7 +46,7 @@ jobs:
           mkdir ~/.ssh
           ssh-keyscan -H ${{ secrets.BASTION_HOST }} >> ~/.ssh/known_hosts
           eval `ssh-agent -s`
-          ssh -fN -v -L 5432:${{ env.CREDENTIALS_HOST }} ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} -i ssh_key.pem &
+          ssh -fN -v -L 5432:${{ env.CREDENTIALS_HOST }}:5432 ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} -i ssh_key.pem &
 
       - name: Generate flyway config file
         run: |
