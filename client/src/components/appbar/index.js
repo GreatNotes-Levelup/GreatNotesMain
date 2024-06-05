@@ -67,7 +67,6 @@ const AppBar = () => {
 
   const drawerNavItems = [
     {name: "Home", link: getBestHomeLink(), authNeeded: false},
-    {name: "New Note", link: "editor", authNeeded: true},
     {name: "Login", onClick: onLogin, unAuthed: true},
     {name: "Logout", onClick: onLogout, authNeeded: true}
 
@@ -128,11 +127,6 @@ const AppBar = () => {
               <li>
                 <Link to={getBestHomeLink()}>
                   <Button>Home</Button>
-                </Link>
-              </li>
-              <li>
-                <Link to="/editor">
-                  <Button>New Note</Button>
                 </Link>
               </li>
               <li>
