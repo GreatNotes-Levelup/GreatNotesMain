@@ -6,7 +6,7 @@ const createNote = async (user, formData)=>{
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': user.access_token
+            'Authorization': 'Bearer ' + user.access_token
           },
           body: JSON.stringify({...formData, content:`# Start **writing** `}),
         });
@@ -22,7 +22,7 @@ const getNoteByUser=async(user)=>{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': user.access_token
+        'Authorization': 'Bearer ' + user.access_token
       },
     });
     return response.json();
@@ -37,7 +37,7 @@ const getSharedNoteByUser=async(user)=>{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': user.access_token
+        'Authorization': 'Bearer ' + user.access_token
       },
     });
     return response.json();
@@ -52,7 +52,7 @@ const saveNote = async(user, id,title,description, content)=>{
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': user.access_token
+        'Authorization': 'Bearer ' + user.access_token
       },
       body: JSON.stringify({title:title, description:description, content:content}),
     });
