@@ -56,8 +56,6 @@ const AppBar = () => {
               <li>
                 <Link to={getBestHomeLink()}>
                   <Button>Home</Button>
-                <Link to="/dashboard">
-                  <Button >Home</Button>
                 </Link>
               </li>
               <li>
