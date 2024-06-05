@@ -25,7 +25,8 @@ export default (_env, argv) => {
       }),
       new webpack.EnvironmentPlugin({
         ENV: process.env.ENV, 
-        PORT: process.env.PORT,
+        API_PORT: process.env.API_PORT,
+        WEB_PORT: process.env.WEB_PORT,
         DOMAIN: process.env.DOMAIN,
         COGNITO_DOMAIN: process.env.COGNITO_DOMAIN
       })
@@ -58,7 +59,7 @@ export default (_env, argv) => {
     },
 
     devServer: {
-      port: 3000,
+      port: process.env.WEB_PORT ?? 3000,
       hot: true,
       open: true,
       historyApiFallback: true,

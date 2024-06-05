@@ -1,6 +1,6 @@
 export const getApiURL = () => {
   if (process.env.ENV === "development") {
-    return `http://localhost:${process.env.PORT ?? 8080}`;
+    return `http://localhost:${process.env.API_PORT ?? 8080}`;
   } else {
     return process.env.DOMAIN
   }
@@ -19,11 +19,11 @@ export function parseJwt (token) {
 
 export async function getLoginURL() {
   let url =
-    `${COGNITO_DOMAIN}/login?response_type=code&`;
+    `${process.env.COGNITO_DOMAIN}/login?response_type=code&`;
   url +=
     'redirect_uri=' +
     (process.env.ENV === 'development'
-      ? `http://localhost:${process.env.PORT ?? 8080}`
+      ? `http://localhost:${process.env.WEB_PORT ?? 3000}`
       : process.env.DOMAIN) +
     '/login';
   let getClientIdUrl = getApiURL() + '/api/auth/client_id';

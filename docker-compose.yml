@@ -19,16 +19,17 @@ services:
   webapp:
     build: .
     environment:
-      - AWS_CLIENT_ID=
-      - AWS_CLIENT_SECRET=
-      - AWS_USER_POOL_ID=
-      - COGNITO_DOMAIN=
+      - AWS_CLIENT_ID=4mi8l3p7pcglt1ig1717qqjbtd
+      - AWS_CLIENT_SECRET=opofijbm9p7t3ejdt417hr4uqabgdkgbig0idkr506f51ammkti
+      - AWS_USER_POOL_ID=eu-west-1_5IuLp25AP
+      - COGNITO_DOMAIN=https://greatnotes-security-levelup.auth.eu-west-1.amazoncognito.com
       - DB_NAME=testdb
       - DB_USER=dbuser
       - DB_HOST=db
       - DB_PASSWORD=test
       - DB_PORT=5432
-      - PORT=3000
+      - API_PORT=3000
+      - WEB_PORT=3000
       - ENV=development
     ports:
       - 3000:3000

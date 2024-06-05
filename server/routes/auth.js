@@ -3,7 +3,7 @@ import { createUser } from "../services/createUser.js";
 
 
 const router = Router();
-const port = process.env.PORT || 8080;
+const web_port = process.env.WEB_PORT ?? 3000;
 
 router.get('/', (req, res) => {
 
@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
     }
   };
 
-  let redirect_uri = process.env.ENV === "development" ? `http://localhost:${port}/login` : `${process.env.DOMAIN}/login`;
+  let redirect_uri = process.env.ENV === "development" ? `http://localhost:${web_port}/login` : `${process.env.DOMAIN}/login`;
 
   if (redirect_uri === undefined) {
     console.error("Redirect URI wasn't set");
