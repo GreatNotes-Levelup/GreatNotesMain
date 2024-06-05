@@ -6,3 +6,4 @@ role_config
 .env
 .secrets
 .terraform/.terraform
+*.pem
