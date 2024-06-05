@@ -17,6 +17,7 @@ import {
   MenuItem,
   CircularProgress,
 } from '@mui/material';
+import useAuth from '../../components/UserContext.js';
 
 
 const MarkdownEditor = () => {
@@ -24,6 +25,7 @@ const MarkdownEditor = () => {
   const { response } = location.state;
 
   console.log(response);
+  const { user } = useAuth();
   const [markdownText, setMarkdownText] = useState(response.content);
   const [isPreview, setIsPreview] = useState(true);
   const [isSaving, setIsSAving] = useState(false);
@@ -66,7 +68,7 @@ const MarkdownEditor = () => {
 
   const handleSave = async ()=>{
     setIsSAving(true);
-    await saveNote(response["note_id"], response.title, response.description, markdownText)
+    await saveNote(user, response["note_id"], response.title, response.description, markdownText)
     setIsSAving(false);
   }
 
