@@ -7,6 +7,7 @@ on:
     paths:
       - 'database/scripts/**'
       - 'database/flyway/**'
+      - '.github/workflows/flyway-migrations.yml'
 
 permissions:
   contents: read
