@@ -127,7 +127,7 @@ router.put('/update-note/:id', async (req, res) => {
 
 
 // Endpoint to delete a note
-router.delete('/delete-note', async (req, res) => {
+router.delete('/delete-note/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
