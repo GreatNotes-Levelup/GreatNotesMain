@@ -2,7 +2,6 @@ import { Router } from "express";
 import dotenv from 'dotenv';
 import pool from "../services/db_pool.cjs";
 import bodyParser from 'body-parser';
-import authMiddleware from "../middleware/authMiddleware.js";
 
 dotenv.config();
 

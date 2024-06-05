@@ -3,7 +3,6 @@ import notes from './routes/notes.js';
 import auth from './routes/auth.js';
 import cors from 'cors';
 import path from 'path';
-import authMiddleware from './middleware/authMiddleware.js';
 import { rateLimit } from 'express-rate-limit'
 
 import { configDotenv } from 'dotenv';
