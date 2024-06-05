@@ -42,15 +42,12 @@ jobs:
           cat > ./server/.env <<EOF
           DB_USER=${{ env.CREDENTIALS_USERNAME }}
           DB_HOST=${{ env.CREDENTIALS_HOST }}
-          DB_NAME=${{ secrets.DB_NAME }}
+          DB_NAME=${{ env.CREDENTIALS_DB_NAME }}
           DB_PORT=${{ env.CREDENTIALS_PORT }}
           DB_PASSWORD=${{ env.CREDENTIALS_PASSWORD }}
           AWS_CLIENT_ID=${{ secrets.AWS_CLIENT_ID}}
           AWS_CLIENT_SECRET=${{ secrets.AWS_CLIENT_SECRET }}
           AWS_USER_POOL_ID=${{ secrets.AWS_USER_POOL_ID }}
-          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
           EOF
       
       - name: Node setup

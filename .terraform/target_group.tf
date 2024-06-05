@@ -37,8 +37,7 @@ resource "aws_lb_target_group" "http-target-group8080" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "instance" {
-  target_group_arn = aws_lb_target_group.http-target-group8080.arn
-  target_id        = var.ebs_instance_id
-  port             = 8080
+resource "aws_autoscaling_attachment" "default" {
+  autoscaling_group_name = aws_autoscaling_group.default.id
+  lb_target_group_arn   = aws_lb_target_group.http-target-group8080.arn
 }

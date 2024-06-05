@@ -9,6 +9,11 @@ variable "db_name" {
   description = "The name of the database"
 }
 
+variable "instance_name" {
+  type        = string
+  description = "The name of the database instance"
+}
+
 variable "vpc_name" {
   type        = string
   description = "The name of the VPC"
@@ -66,10 +71,4 @@ variable "subnet_count" {
 variable "domain_name" {
   description = "Domain name"
   type        = string
-}
-
-variable "ebs_instance_id" {
-  description = "ID of the ebs instance"
-  type        = string
-  sensitive   = true
 }

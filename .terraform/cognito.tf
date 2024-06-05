@@ -5,11 +5,19 @@ resource "aws_cognito_user_pool" "pool" {
   software_token_mfa_configuration {
     enabled = true
   }
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "aws_cognito_user_pool_domain" "main" {
   domain       = "greatnotes-security-levelup"
   user_pool_id = aws_cognito_user_pool.pool.id
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "aws_cognito_identity_provider" "google" {
@@ -47,6 +55,10 @@ resource "aws_cognito_user_pool_client" "api_client" {
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["email", "openid", "profile"]
   supported_identity_providers         = ["Google"]
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "aws_cognito_user_pool_client" "api_client_local" {
@@ -61,6 +73,10 @@ resource "aws_cognito_user_pool_client" "api_client_local" {
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["email", "openid", "profile"]
   supported_identity_providers         = ["Google"]
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 data "aws_secretsmanager_secret_version" "google_oauth" {
