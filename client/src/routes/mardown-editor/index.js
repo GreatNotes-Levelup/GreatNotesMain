@@ -130,9 +130,9 @@ const MarkdownEditor = () => {
               {isPreview ? <Edit /> : <Visibility />}
             </IconButton>
           </div>
-          <Button variant="outlined" onClick={handleOpen}>
+          {/* <Button variant="outlined" onClick={handleOpen}>
             <Group />
-          </Button>
+          </Button> */}
         </div>
 
         <Divider style={{ backgroundColor: 'slategray' }} />

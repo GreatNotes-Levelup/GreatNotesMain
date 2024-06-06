@@ -8,11 +8,22 @@ dotenv.config();
 const router = Router();
 router.use(bodyParser.json());
 
-// Endpoint to get all notes for user
 router.get('/all-user-notes', async (req, res) => {
   const user = res.locals.user;
+  const limit = parseInt(req.query.limit) || 2; 
+  const offset = parseInt(req.query.offset) || 0;
+
+  console.log(`limit ${limit} offset ${offset}`)
+
+  if (limit < 1 || offset < 0) {
+    return res.status(400).json({ error: 'Invalid limit or offset values' });
+  }
+
   try {
-    const result = await pool.query('SELECT * FROM "Notes" WHERE owner_id = $1 ORDER BY "created_at" DESC', [user.username]);
+    const result = await pool.query(
+      'SELECT * FROM "Notes" WHERE owner_id = $1 ORDER BY "created_at" DESC LIMIT $2 OFFSET $3',
+      [user.username, limit, offset]
+    );
     res.json(result.rows);
   } catch (err) {
     console.error(err);

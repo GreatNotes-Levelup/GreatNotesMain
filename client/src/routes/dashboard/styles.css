@@ -55,3 +55,9 @@ time{
   font-size: small;
   color: lightgray;
 }
+
+.load-more{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

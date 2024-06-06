@@ -22,7 +22,6 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
-
                 <Route element={<ProtectedRoute />}>
                   <Route path="/editor" element={<MarkdownEditor />} />
                   <Route path="/dashboard" element={<Dashboard/>}/>

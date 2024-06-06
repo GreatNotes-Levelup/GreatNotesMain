@@ -5,23 +5,18 @@ import {
   FormHelperText,
   IconButton,
   LinearProgress,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
-import { AddCircle, Delete, Edit } from '@mui/icons-material';
+import { AddCircle, Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@mui/material';
-import { TextField } from '@mui/material';
-import { Dialog } from '@mui/material';
-import { DialogActions } from '@mui/material';
-import { DialogContent } from '@mui/material';
-import { DialogContentText } from '@mui/material';
-import { DialogTitle } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton/index.js';
-import {
-  createNote,
-  getNoteByUser,
-  getSharedNoteByUser,
-  deleteNote,
-} from '../../api/notes.js';
+import { createNote, getNoteByUser, deleteNote } from '../../api/notes.js';
 import useAuth from '../../components/UserContext.js';
 
 const clipString = (str, limit) => {
@@ -35,7 +30,6 @@ const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  const [isRetrieving, setIsRetrieving] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -110,26 +104,41 @@ const Dashboard = () => {
   };
 
   const [myNotes, setMyNotes] = useState([]);
-  const [sharedNotes, setSharedNotes] = useState([]);
+  const [limit, setLimit] = useState(10);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
 
   const retrieveNotes = () => {
-    setIsRetrieving(true);
-    getNoteByUser(user).then((notes) => {
-      setMyNotes(notes);
-      setIsRetrieving(false);
-    });
-    getSharedNoteByUser(user).then((notes) => {
-      setSharedNotes(notes);
+    if (isFetching || !hasMore) return;
+    setIsFetching(true);
+    getNoteByUser(user, limit, offset).then((notes) => {
+      setMyNotes((prevNotes) => [...prevNotes, ...notes]);
+      setIsFetching(false);
+      if (notes.length < limit) {
+        setHasMore(false);
+      }
+    }).catch(() => {
+      setIsFetching(false);
     });
   };
 
-  useEffect(retrieveNotes, []);
+  const loadMoreNotes = () => {
+    if (!isFetching && hasMore) {
+      setOffset((prevOffset) => prevOffset + limit);
+    }
+  };
+
+  useEffect(() => {
+    retrieveNotes();
+  }, [offset]); 
+
   return (
     <main id="dashboard">
       {isDeleting && <LinearProgress style={{ width: '100%' }} />}
       <h1>My Notes</h1>
       <section className="notes-section">
-        {isRetrieving ? (
+        {isFetching&& myNotes.length === 0 ? (
           <CircularProgress />
         ) : (
           <>
@@ -141,74 +150,53 @@ const Dashboard = () => {
               <AddCircle />
               <h3> New note</h3>
             </Button>
-            {myNotes.map((item) => {
-              return (
-                <div
-                  onClick={() => {
-                    if (!isDeleting)
-                      navigate('/editor', { state: { response: item } });
-                  }}
-                  className="card"
-                  key={item['note_id']}
-                >
-                  <h3>{`${clipString(item.title, 13)}`}</h3>
-                  <div className="description">
-                    {`${clipString(item.description, 40)}`}
-                  </div>
-                  <div className="bottom">
-                    <time
-                      datetime={`${formatDate(item.updated_at)}`}
-                    >{`${formatDate(item.updated_at)}`}</time>
-                    <IconButton
-                      color="error"
-                      disabled={isDeleting}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleDeleteNote(item['note_id']);
-                      }}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </div>
-                </div>
-              );
-            })}
-          </>
-        )}
-      </section>
-
-      <h1>Shared with me</h1>
-      {sharedNotes.length > 0 ? (
-        <section className="notes-section">
-          {sharedNotes.map((item) => {
-            return (
+            {myNotes.map((item, index) => (
               <div
-                onClick={() =>
-                  navigate('/editor', { state: { response: item } })
-                }
+                onClick={() => {
+                  if (!isDeleting)
+                    navigate('/editor', { state: { response: item } });
+                }}
                 className="card"
-                key={item['note_id']}
+                key={index}
               >
-                <h3>{`${item.title}`}</h3>
-                <p>{item.description}</p>
+                <h3>{`${clipString(item.title, 13)}`}</h3>
+                <div className="description">
+                  {`${clipString(item.description, 40)}`}
+                </div>
                 <div className="bottom">
-                  <time
-                    datetime={`${formatDate(item.updated_at)}`}
-                  >{`${formatDate(item.updated_at)}`}</time>
+                  <time dateTime={`${formatDate(item.updated_at)}`}>
+                    {`${formatDate(item.updated_at)}`}
+                  </time>
                   <IconButton
-                    color="primary"
-                    onClick={() => navigate('/editor', { state: { item } })}
+                    color="error"
+                    disabled={isDeleting}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleDeleteNote(item['note_id']);
+                    }}
                   >
-                    <Edit />
+                    <Delete />
                   </IconButton>
                 </div>
               </div>
-            );
-          })}
-        </section>
-      ) : (
-        <p>{'Nothing shared with you yet:)'}</p>
-      )}
+            ))}
+            {hasMore && (
+              <div className="load-more">
+                  <LoadingButton
+                    onClick={loadMoreNotes}
+                    variant="contained"
+                    color="primary"
+                    loading={isFetching}
+                    disabled={isFetching}
+                  >
+                    Load More
+                  </LoadingButton>
+
+              </div>
+            )}
+          </>
+        )}
+      </section>
 
       <Dialog
         open={open}
@@ -242,7 +230,7 @@ const Dashboard = () => {
             onChange={handleInputChange}
           />
           <FormHelperText>
-            {formData.title.trim().length == 25
+            {formData.title.trim().length === 25
               ? 'Character limit reached 25/25'
               : ''}
           </FormHelperText>
@@ -263,7 +251,7 @@ const Dashboard = () => {
             onChange={handleInputChange}
           />
           <FormHelperText>
-            {formData.description.trim().length == 100
+            {formData.description.trim().length === 100
               ? 'Character limit reached 100/100'
               : ''}
           </FormHelperText>
@@ -276,8 +264,7 @@ const Dashboard = () => {
             disabled={isCreating}
             loading={isCreating}
             type="submit"
-            variant="contained"
-            color="primary"
+            variant="text"
           >
             Create
           </LoadingButton>

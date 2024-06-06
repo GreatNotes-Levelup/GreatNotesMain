@@ -16,20 +16,21 @@ const createNote = async (user, formData)=>{
       }
 }
 
-const getNoteByUser=async(user)=>{
+const getNoteByUser = async (user, limit, offset) => {
   try {
-    const response =  await fetch(getApiURL()+'/api/notes/all-user-notes', {
+    const response = await fetch(`${getApiURL()}/api/notes/all-user-notes?limit=${limit}&offset=${offset}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + user.access_token
+        'Authorization': 'Bearer ' + user.access_token,
       },
     });
     return response.json();
   } catch (error) {
     console.error('Error:', error);
   }
-}
+};
+
 
 const getSharedNoteByUser=async(user)=>{
   try {
