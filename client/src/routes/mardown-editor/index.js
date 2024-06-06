@@ -36,7 +36,7 @@ const MarkdownEditor = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isDownloading, setIsSDownloading] = useState(false);
 
-  const insertTextAtCursor = (text) => {
+  const insertTextOnEitherSideOfCursor = (textbefore, textafter) => {
     if (isPreview) {
       return;
     }
@@ -45,28 +45,30 @@ const MarkdownEditor = () => {
     const end = textarea.selectionEnd;
     const before = markdownText.substring(0, start);
     const after = markdownText.substring(end, markdownText.length);
+    const selection = markdownText.substring(start, end);
 
-    setMarkdownText(before + text + after);
+    setMarkdownText(before + textbefore + selection + textafter + after);
     setTimeout(() => {
-      textarea.selectionStart = textarea.selectionEnd = start + text.length / 2;
+      textarea.selectionStart = start + textbefore.length;
+      textarea.selectionEnd = textarea.selectionStart + selection.length;
       textarea.focus();
     }, 0);
   };
 
   const makeBold = () => {
-    insertTextAtCursor('****');
+    insertTextOnEitherSideOfCursor('**', '**');
   };
 
   const makeItalic = () => {
-    insertTextAtCursor('__');
+    insertTextOnEitherSideOfCursor('_', '_');
   };
 
   const makeUnderline = () => {
-    insertTextAtCursor('<u></u>');
+    insertTextOnEitherSideOfCursor('<u>', '</u>');
   };
 
   const makeStrikethrough = () => {
-    insertTextAtCursor('~~');
+    insertTextOnEitherSideOfCursor('~', '~');
   };
 
   const handleSave = async () => {
