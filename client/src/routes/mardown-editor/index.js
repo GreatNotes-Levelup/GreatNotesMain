@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css';
 import { marked } from 'marked';
-import { Visibility, Save, Edit, Group } from '@mui/icons-material';
+import { Visibility, Save, Edit, Download } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { saveNote } from '../../api/notes.js';
 import {
@@ -20,6 +20,9 @@ import {
 } from '@mui/material';
 import useAuth from '../../components/UserContext.js';
 import DOMPurify from 'dompurify';
+import jsPDF from 'jspdf';
+import axios from 'axios';
+import html2canvas from 'html2canvas';
 
 const MarkdownEditor = () => {
   const location = useLocation();
@@ -31,9 +34,7 @@ const MarkdownEditor = () => {
   const [markdownText, setMarkdownText] = useState(response.content);
   const [isPreview, setIsPreview] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [isDownloading, setIsSDownloading] = useState(false);
 
   const insertTextAtCursor = (text) => {
     if (isPreview) {
@@ -80,6 +81,41 @@ const MarkdownEditor = () => {
     setIsSaving(false);
   };
 
+  const handleDownloadPDF = async () => {
+    setIsSDownloading(true);
+    const sanitizedContent = DOMPurify.sanitize(marked.parse(markdownText));
+    const cssUrl =
+      'https://cdn.jsdelivr.net/npm/github-markdown-css@5.5.1/github-markdown.min.css';
+    const { data: css } = await axios.get(cssUrl);
+    const htmlContent = `
+      <style>
+        ${css}
+        .pdf-container {
+          padding: 20px; /* Adjust the padding value as needed */
+        }
+      </style>
+      <div class="pdf-container">
+        <div class="markdown-body">
+          ${sanitizedContent}
+        </div>
+      </div>
+    `;
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    document.body.appendChild(tempDiv);
+    html2canvas(tempDiv.querySelector('.pdf-container')).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF();
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth() - 40;
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(imgData, 'PNG', 20, 20, pdfWidth, pdfHeight);
+      pdf.save(`${response.title}.pdf`);
+      document.body.removeChild(tempDiv);
+      setIsSDownloading(false);
+    });
+  };
+  
   useEffect(() => {
     const checkScreenSize = () => {
       if (window.matchMedia('(min-width: 768px)').matches) {
@@ -130,9 +166,13 @@ const MarkdownEditor = () => {
               {isPreview ? <Edit /> : <Visibility />}
             </IconButton>
           </div>
-          {/* <Button variant="outlined" onClick={handleOpen}>
-            <Group />
-          </Button> */}
+          <Button
+            disabled={isDownloading}
+            variant="outlined"
+            onClick={handleDownloadPDF}
+          >
+            {isDownloading ? <CircularProgress /> : <Download />}
+          </Button>
         </div>
 
         <Divider style={{ backgroundColor: 'slategray' }} />
@@ -160,62 +200,6 @@ const MarkdownEditor = () => {
           }}
         ></article>
       )}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="Manage Access"
-        aria-describedby="Control who access your note"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Box
-          sx={{
-            bgcolor: 'background.paper',
-            borderRadius: '0.5rem',
-            boxShadow: 24,
-            p: 4,
-            color: 'white',
-          }}
-        >
-          <Typography variant="h6" component="h2" align="center" gutterBottom>
-            Manage Access
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div
-              className="access-input"
-              style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}
-            >
-              <TextField fullWidth label="Email" variant="outlined" />
-              <Select
-                fullWidth
-                value="read only"
-                variant="outlined"
-                label="Permission"
-              >
-                <MenuItem value="read only">Read Only</MenuItem>
-                <MenuItem value="edit">Edit</MenuItem>
-              </Select>
-            </div>
-            <Button variant="contained">Add</Button>
-            <Divider />
-            <Box
-              sx={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}
-            >
-              <Typography variant="subtitle1" component="h3">
-                Current Access
-              </Typography>
-              <div className="access-wrapper">
-                <Chip label={'arinaomuleluz@gmail@gmail.com'} />
-                <Chip label={'arinao@gmail.com'} />
-                <Chip label={'arinao@gmail.com'} />
-              </div>
-            </Box>
-          </Box>
-        </Box>
-      </Modal>
     </main>
   );
 };
