@@ -28,8 +28,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [noteToDelete, setNoteToDelete] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -42,10 +44,15 @@ const Dashboard = () => {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
     setErrors({ title: '', description: '' });
+  };
+  const handleOpenDeleteDialog = () => {
+    setIsDeleteDialogOpen(true);
+  };
+  const handleCloseDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
   };
 
   const handleInputChange = (e) => {
@@ -85,16 +92,24 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteNote = async (noteId) => {
+  const handleDeleteNote = async () => {
     setIsDeleting(true);
     try {
-      await deleteNote(user, noteId);
-      setMyNotes(myNotes.filter((note) => note['note_id'] !== noteId));
+      await deleteNote(user, noteToDelete.note_id); // Delete note by its ID
+      setMyNotes(
+        myNotes.filter((note) => note.note_id !== noteToDelete.note_id)
+      ); // Remove the deleted note from state
       setIsDeleting(false);
+      handleCloseDeleteDialog(); // Close the delete dialog after successful deletion
     } catch (e) {
       setIsDeleting(false);
       alert(e.message);
     }
+  };
+
+  const handleConfirmDelete = (note) => {
+    setNoteToDelete(note); // Set the note to delete
+    handleOpenDeleteDialog(); // Open the delete dialog for confirmation
   };
 
   const formatDate = (dateString) => {
@@ -112,15 +127,17 @@ const Dashboard = () => {
   const retrieveNotes = () => {
     if (isFetching || !hasMore) return;
     setIsFetching(true);
-    getNoteByUser(user, limit, offset).then((notes) => {
-      setMyNotes((prevNotes) => [...prevNotes, ...notes]);
-      setIsFetching(false);
-      if (notes.length < limit) {
-        setHasMore(false);
-      }
-    }).catch(() => {
-      setIsFetching(false);
-    });
+    getNoteByUser(user, limit, offset)
+      .then((notes) => {
+        setMyNotes((prevNotes) => [...prevNotes, ...notes]);
+        setIsFetching(false);
+        if (notes.length < limit) {
+          setHasMore(false);
+        }
+      })
+      .catch(() => {
+        setIsFetching(false);
+      });
   };
 
   const loadMoreNotes = () => {
@@ -131,14 +148,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     retrieveNotes();
-  }, [offset]); 
+  }, [offset]);
 
   return (
     <main id="dashboard">
       {isDeleting && <LinearProgress style={{ width: '100%' }} />}
       <h1>My Notes</h1>
       <section className="notes-section">
-        {isFetching&& myNotes.length === 0 ? (
+        {isFetching && myNotes.length === 0 ? (
           <CircularProgress />
         ) : (
           <>
@@ -172,7 +189,7 @@ const Dashboard = () => {
                     disabled={isDeleting}
                     onClick={(event) => {
                       event.stopPropagation();
-                      handleDeleteNote(item['note_id']);
+                      handleConfirmDelete(item); 
                     }}
                   >
                     <Delete />
@@ -182,16 +199,15 @@ const Dashboard = () => {
             ))}
             {hasMore && (
               <div className="load-more">
-                  <LoadingButton
-                    onClick={loadMoreNotes}
-                    variant="contained"
-                    color="primary"
-                    loading={isFetching}
-                    disabled={isFetching}
-                  >
-                    Load More
-                  </LoadingButton>
-
+                <LoadingButton
+                  onClick={loadMoreNotes}
+                  variant="contained"
+                  color="primary"
+                  loading={isFetching}
+                  disabled={isFetching}
+                >
+                  Load More
+                </LoadingButton>
               </div>
             )}
           </>
@@ -267,6 +283,38 @@ const Dashboard = () => {
             variant="text"
           >
             Create
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={isDeleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        PaperProps={{
+          component: 'form',
+          onSubmit: (event) => {
+            event.preventDefault();
+          },
+        }}
+      >
+        <DialogTitle>Delete note?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this note?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button disabled={isDeleting} onClick={handleCloseDeleteDialog}>
+            Cancel
+          </Button>
+          <LoadingButton
+            disabled={isDeleting}
+            loading={isDeleting}
+            type="submit"
+            variant="text"
+            onClick={()=>handleDeleteNote(noteToDelete)}
+          >
+            Delete
           </LoadingButton>
         </DialogActions>
       </Dialog>
