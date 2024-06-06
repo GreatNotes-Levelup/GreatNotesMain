@@ -63,7 +63,6 @@ const Dashboard = () => {
   };
 
   const handleSubmit = async () => {
-    setIsCreating(true);
     let isValid = true;
     const newErrors = { title: '', description: '' };
 
@@ -80,6 +79,7 @@ const Dashboard = () => {
     setErrors(newErrors);
 
     if (isValid) {
+      setIsCreating(true);
       try {
         const response = await createNote(user, formData);
         setIsCreating(false);
