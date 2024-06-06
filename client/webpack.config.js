@@ -66,7 +66,7 @@ export default (_env, argv) => {
       proxy: [
         {
           context: ["/api"],
-          target: "http://localhost:8080",
+          target: `http://localhost:${process.env.API_PORT ?? 8080}`,
         },
       ],
     },
