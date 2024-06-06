@@ -147,7 +147,7 @@ const MarkdownEditor = () => {
           <textarea
             autoFocus
             value={markdownText}
-            onChange={(e) => setMarkdownText(e.target.value.trim())}
+            onChange={(e) => setMarkdownText(e.target.value)}
           />
         )}
       </section>

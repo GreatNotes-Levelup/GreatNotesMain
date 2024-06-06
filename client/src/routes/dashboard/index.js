@@ -94,7 +94,7 @@ const Dashboard = () => {
   const handleDeleteNote = async (noteId) => {
     setIsDeleting(true);
     try {
-      await deleteNote(useAuth, noteId);
+      await deleteNote(user, noteId);
       setMyNotes(myNotes.filter((note) => note['note_id'] !== noteId));
       setIsDeleting(false);
     } catch (e) {
