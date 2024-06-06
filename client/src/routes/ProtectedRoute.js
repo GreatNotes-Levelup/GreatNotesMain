@@ -1,12 +1,21 @@
 import React from 'react';
 import useAuth from '../components/UserContext.js';
 import { Navigate, Outlet } from 'react-router-dom';
+import { parseJwt } from '../utils.js';
 
 const ProtectedRoute = () => {
-  const { user } = useAuth();
+  const { user, removeCurrentUser } = useAuth();
 
-  // Basic check for if the user has a token saved.
-  return user ? <Outlet /> : <Navigate to="/" replace />;
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+  let userJwt = parseJwt(user.access_token);
+  if (Date.now() >= userJwt.exp * 1000) {
+    setTimeout(removeCurrentUser, 0);
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet /> ;
 }
 
 export default ProtectedRoute;
