@@ -67,9 +67,3 @@ if (process.env.AWS_CLIENT_ID === undefined) {
 if (process.env.DB_USER === undefined) {
   console.error('Check your DB env vars');
 }
-
-if (process.env.DOMAIN === undefined && process.env.ENV === 'production') {
-  console.error('DOMAIN is undefined.')
-  listener.close()
-  process.exit(1)
-}
